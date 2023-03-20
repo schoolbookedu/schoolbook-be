@@ -17,8 +17,8 @@ exports.UserUpdateExcludedFields = ["userType"];
 
 exports.excludedQueryFields = ["sort", "page", "pageSize", "fields"];
 
-exports.UniversityExcludedFields = [];
+exports.UniversityExcludedFields = []
 
-exports.CourseExcludedFields = [];
+exports.CourseExcludedFields = []
 
-exports.MaterialExcludedFields = [];
+exports.MaterialExcludedFields = []
