@@ -22,7 +22,7 @@ const { generateAccessToken } = require("../utils/token");
 const { removeFields } = require("../utils/handleExcludedFields");
 const { sendMailWithSendgrid } = require("../utils/mailing");
 const { validationCheck } = require("../utils/validationCheck");
-const { userTypes } = require("../utils/usertype");
+const { userTypes } = require("../utils/userTypes");
 const { uploadImage } = require("../utils/imageProcessing");
 const { logs } = require("../utils/log");
 

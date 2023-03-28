@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const connectToDb = async() => {
     try {
         const DB_URL = process.env.DB_URL;
+        mongoose.set("strictQuery", true);
         await mongoose.connect(DB_URL, {
-            useCreateIndex: true,
+            // useCreateIndex: true,
             useUnifiedTopology: true,
             useNewUrlParser: true,
-            useFindAndModify: false,
+            // useFindAndModify: false,
         });
         console.log("DB connection successful");
     } catch (err) {

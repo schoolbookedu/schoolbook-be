@@ -80,7 +80,7 @@ exports.getOne = async (req, res, model, excludedFields = ["__v"]) => {
       statusCode: statusCodes[200],
       responseText: responseText.SUCCESS,
       data: { resource },
-    });
+    });c
   } catch (error) {
     console.log(error);
     return res.status(statusCodes[400]).json({
