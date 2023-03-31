@@ -10,11 +10,11 @@ const { authenticate } = require("../middlewares/auth");
 
 const universityRouter = express.Router();
 
-universityRouter.get("/", authenticate, getAllUniversity)
-universityRouter.get("/:id", authenticate, getAUniversity)
-universityRouter.post("/", authenticate, createUniversity)
-universityRouter.patch("/:id", authenticate, updateUniversity)
-universityRouter.get("/:id", authenticate, deleteUniversity)
+universityRouter.get("/", getAllUniversity)
+universityRouter.get("/:id", getAUniversity)
+universityRouter.post("/",createUniversity)
+universityRouter.patch("/:id", updateUniversity)
+universityRouter.get("/:id",  deleteUniversity)
 
 
 module.exports = { universityRouter }

@@ -25,6 +25,7 @@ const app = express();
 app.enable("trust proxy");
 
 //middlewares
+const { authenticate } = require("./middlewares/auth");
 
 app.use(helmet()); //middleware to set security HTTP headers
 app.use(express.static(path.join(__dirname, "public")));
