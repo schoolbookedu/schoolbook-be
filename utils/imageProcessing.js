@@ -28,3 +28,24 @@ const filterFileType = (req, file, cb) => {
 };
 exports.upload = multer({ storage: multerStorage, fileFilter: filterFileType });
 exports.cloudinary = cloudinary;
+
+exports.uploadImage = async (img, field, folder) => {
+  let imageURL = "";
+
+  await cloudinary.uploader.upload(
+    img,
+    {
+      public_id: `${folder}/${field}-${Date.now()}`,
+    },
+    (error, result) => {
+      if (error) {
+        console.log(`Error uploading ${field} to cloudinary`);
+      } else {
+        imageURL = result.secure_url;
+        //return result.secure_url;
+      }
+    }
+  );
+
+  return imageURL;
+};
