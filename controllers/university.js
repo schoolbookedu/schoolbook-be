@@ -11,7 +11,6 @@ const { UniversityExcludedFields } = require("../utils/excludedFields");
 const { validationCheck } = require("../utils/validationCheck");
 const { responseText, statusCodes } = require("../utils/response");
 const { removeFields } = require("../utils/handleExcludedFields");
-const { validationCheck } = require("../utils/validationCheck");
 const University = require("../models/university")
 
 exports.getAllUniversity = async (req, res, next) => {
