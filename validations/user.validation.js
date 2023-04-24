@@ -16,13 +16,13 @@ exports.UserCreationValidation = [
 ];
 
 exports.UserUpdateValidation = [
-  body("fullName").trim().optional(),
+  body("fullName").trim().optional({ checkFalsy: true }),
   body("email")
     .trim()
-    .optional()
+    .optional({ checkFalsy: true })
     .isEmail()
     .withMessage("email must be valid"),
-  body("phoneNumber").trim().optional(),
+  body("phoneNumber").trim().optional({ checkFalsy: true }),
 ];
 
 exports.UserUpdatePasswordValidation = [

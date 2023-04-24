@@ -5,7 +5,6 @@ exports.CourseCreationValidation =  [
     body("title").trim().notEmpty.withMessage("title is required"),
     body("thumbnail").isString().withMessage("thumbnail must be a string").optional(),
     body("objectives").isString().withMessage("objectives must be a string").optional(),
-    body("outlines").isArray().withMessage("outlines must be an array"),
     body("outlines").custom(async (value) => {
         if(value !== undefined && value.length > 0 ) {
             value.forEach(outline => {

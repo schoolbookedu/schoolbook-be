@@ -24,9 +24,6 @@ connectToDB();
 const app = express();
 app.enable("trust proxy");
 
-//middlewares
-const { authenticate } = require("./middlewares/auth");
-
 app.use(helmet()); //middleware to set security HTTP headers
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
@@ -76,7 +73,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/users", userRouter); //users route
-app.use("/api/v1/universities", authenticate, universityRouter); //univesity route
+app.use("/api/v1/universities", universityRouter); //univesity route
 
 //catch undefined endpoints
 app.use(undefinedrouter);
