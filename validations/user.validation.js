@@ -15,4 +15,37 @@ exports.UserCreationValidation = [
   body("gender").isIn(gender).notEmpty().withMessage("gender is required"),
 ];
 
-exports.UserUpdateValidation = [];
+exports.UserUpdateValidation = [
+  body("fullName").trim().optional({ checkFalsy: true }),
+  body("email")
+    .trim()
+    .optional({ checkFalsy: true })
+    .isEmail()
+    .withMessage("email must be valid"),
+  body("phoneNumber").trim().optional({ checkFalsy: true }),
+];
+
+exports.UserUpdatePasswordValidation = [
+  body("oldPassword").notEmpty().withMessage("oldPassword is required"),
+  body("newPassword").notEmpty().withMessage("newPassword is required"),
+  body("newConfirmPassword")
+    .notEmpty()
+    .withMessage("newConfirmPassword is required"),
+];
+
+exports.UserResetPasswordValidation = [
+  body("passwordResetCode").notEmpty().withMessage("oldPassword is required"),
+  body("newPassword").notEmpty().withMessage("newPassword is required"),
+  body("newConfirmPassword")
+    .notEmpty()
+    .withMessage("newConfirmPassword is required"),
+];
+
+exports.UserForgotPasswordValidation = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("email is required")
+    .isEmail()
+    .withMessage("email not valid"),
+];

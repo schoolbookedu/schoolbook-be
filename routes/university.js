@@ -12,9 +12,9 @@ const universityRouter = express.Router();
 
 universityRouter.get("/", getAllUniversity)
 universityRouter.get("/:id", getAUniversity)
-universityRouter.post("/",createUniversity)
-universityRouter.patch("/:id", updateUniversity)
-universityRouter.get("/:id",  deleteUniversity)
+universityRouter.post("/", authenticate,createUniversity)
+universityRouter.patch("/:id",authenticate, updateUniversity)
+universityRouter.delete("/:id", authenticate, deleteUniversity)
 
 
 module.exports = { universityRouter }
