@@ -22,3 +22,5 @@ exports.UniversityExcludedFields = []
 exports.CourseExcludedFields = []
 
 exports.MaterialExcludedFields = []
+
+exports.DepartmentExcludedFields = []
