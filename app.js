@@ -75,7 +75,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/users", userRouter); //users route
 app.use("/api/v1/universities", universityRouter); //univesity route
-app.use("/api/v1/department", departmentRouter); //univesity route
+app.use("/api/v1/departments", departmentRouter); //univesity route
 
 //catch undefined endpoints
 app.use(undefinedrouter);
