@@ -53,7 +53,7 @@ exports.createUniversity = async (req, res, next) => {
 exports.updateUniversity = async (req, res, next) => {
   try {
      await validationCheck(req, res);
-     updateDocument(req, res, User, "Uinversity details updated successfully");
+     updateDocument(req, res, University, "University details updated successfully");
   } catch (error) {
     console.log(error);
     next(error);
@@ -62,7 +62,7 @@ exports.updateUniversity = async (req, res, next) => {
 
 exports.deleteUniversity = async (req, res, next) => {
     try {
-         deleteDocument(req, res, User);
+         deleteDocument(req, res, University);
     } catch (error) {
         console.log(error)
         next(error)

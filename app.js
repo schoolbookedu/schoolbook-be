@@ -14,10 +14,11 @@ const cookieParser = require("cookie-parser");
 
 const { userRouter } = require("./routes/user");
 const { undefinedrouter } = require("./routes/undefinedroute");
+const { universityRouter } = require("./routes/university");
+const { departmentRouter } = require("./routes/department");
 
 // db controller
 const connectToDB = require("./utils/dbcon");
-const { universityRouter } = require("./routes/university");
 
 connectToDB();
 
@@ -74,6 +75,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/users", userRouter); //users route
 app.use("/api/v1/universities", universityRouter); //univesity route
+app.use("/api/v1/departments", departmentRouter); //univesity route
 
 //catch undefined endpoints
 app.use(undefinedrouter);
