@@ -6,6 +6,6 @@ exports.DepartmentCreationValidation = [
 ];
 
 exports.DepartmentUpdateValidation = [
-  body("name").trim().optional({ checkFalsy }),
-  body("faculty").trim().optional({ checkFalsy }),
+  body("name").trim().optional({ checkFalsy: true }),
+  body("faculty").trim().optional({ checkFalsy: true }),
 ];
