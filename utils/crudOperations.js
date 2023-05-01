@@ -80,7 +80,7 @@ exports.getOne = async (req, res, model, excludedFields = ["__v"]) => {
       statusCode: statusCodes[200],
       responseText: responseText.SUCCESS,
       data: { resource },
-    });c
+    });
   } catch (error) {
     console.log(error);
     return res.status(statusCodes[400]).json({
@@ -130,15 +130,15 @@ exports.deleteDocument = async (req, res, model) => {
   try {
     const resource = await model.findById(req.params.id);
     if (!resource) {
-      res.status(statusCodes[404]).json({
+      return res.status(statusCodes[404]).json({
         statusCode: statusCodes[404],
         responseText: responseText.FAIL,
         errors: [{ msg: "Resource not found" }],
       });
     }
     await model.findByIdAndRemove(req.params.id);
-    res.status(statusCodes[204]).json({
-      statusCode: statusCodes[204],
+    return res.status(statusCodes[200]).json({
+      statusCode: statusCodes[200],
       responseText: responseText.SUCCESS,
       data: {
         msg: "Resource deleted successfully",

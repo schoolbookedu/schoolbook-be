@@ -77,7 +77,7 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
      await validationCheck(req, res);
-     removeFields(UserUpdateExcludedFields);
+     removeFields(UserUpdateExcludedFields, req.body);
      updateDocument(req, res, User, "User updated successfully");
   } catch (error) {
     console.log(error);

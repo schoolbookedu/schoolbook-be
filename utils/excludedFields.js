@@ -1,5 +1,4 @@
 exports.UserCreateExcludedFields = [
-  "userType",
   "passwordResetToken",
   "passwordResetTokenExpires",
   "isVerified",
@@ -13,7 +12,7 @@ exports.UserGetExcludedFields = [
   "password",
 ];
 
-exports.UserUpdateExcludedFields = ["userType"];
+exports.UserUpdateExcludedFields = ["password", "userType"];
 
 exports.excludedQueryFields = ["sort", "page", "pageSize", "fields"];
 
