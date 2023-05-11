@@ -66,8 +66,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(errorHandler)
-
 //routes
 app.get("/", (req, res) => {
   res.json({
