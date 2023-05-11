@@ -10,8 +10,6 @@ const hpp = require("hpp");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
-//middlewares
-const errorHandler = require("./middlewares/errorhandler")
 
 //user defined modules
 
