@@ -178,11 +178,21 @@ exports.createDocument = async (
     }
     return { msg, resource, extra };
   } catch (error) {
-    console.log(error);
-    //   return res.status(statusCodes[500]).json({
-    //     statusCode: statusCodes[500],
-    //     responseText: responseText.FAIL,
-    //     errors: [{ msg: error.message }],
-    //   });
+      let customError = {
+        statusCode: error.statusCode || statusCodes[500],
+        msg: error.message || "Something went wrong",
+      };
+
+    if (error.code && error.code === 11000) {
+       customError.msg = `Duplicate value entered for ${Object.keys(
+         error.keyValue
+       )}, please choose another value`;
+       customError.statusCode = statusCodes[400];
+    }
+      return res.status(customError.statusCode).json({
+        statusCode: customError.statusCode,
+        responseText: responseText.FAIL,
+        errors: [{ msg: customError.msg }],
+      });
   }
 };
