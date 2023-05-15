@@ -35,7 +35,12 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json({ limit: "100mb" })); //middleware for body-paser
 app.use(bodyParser.urlencoded({ extended: true, limit: "100mb" }));
 app.use(bodyParser.json({ limit: "100mb" }));
-app.use(cors()); //middle ware to allow cross origin resource sharing
+app.use(cors({
+    origin: "https://schoolbook-be.onrender.com",
+    headers: ["Content-Type"],
+    credentials: true,
+})); //middle ware to allow cross origin resource sharing
+app.options('*', cors())
 
 //protect DB from NOSQL query injections using the express-mongo-sanitize middleware
 // intercept the req.body, req.params, and req.query and remove malicious codes
