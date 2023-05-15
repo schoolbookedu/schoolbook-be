@@ -29,12 +29,12 @@ const userSchema = new Schema({
   university: {
     type: Schema.Types.ObjectId,
     ref: "University",
-    // required: true,
+    required: true,
   },
   department: {
     type: Schema.Types.ObjectId,
     ref: "Department",
-    // required: true,
+    required: true,
   },
   myCourses: [String],
   phoneNumber: {
