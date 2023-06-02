@@ -39,36 +39,16 @@ const User = require("../models/user");
 
 exports.getAllUser = async (req, res) => {
   try {
-    getAll(req, res, User, UserGetExcludedFields);
+    getAll(req,  res,  User, UserGetExcludedFields);;
   } catch (error) {
-    console.log(error);
-      return res.status(statusCodes[500]).json({
-      statusCode: statusCodes[500],
-      responseText: responseText.FAIL,
-      errors: [
-        {
-          msg: error.message || "Something went wrong, Please try again later",
-        },
-      ],
-    });
-  }
+    console.log(error)
   }
 
 exports.getAUser = async (req, res) => {
   try {
-    getOne(req, res, User, UserGetExcludedFields);
+    getOne(req, res, User, UserGetExcludedFields);;
   } catch (error) {
-    console.log(error);
-      return res.status(statusCodes[500]).json({
-      statusCode: statusCodes[500],
-      responseText: responseText.FAIL,
-      errors: [
-        {
-          msg: error.message || "Something went wrong, Please try again later",
-        },
-      ],
-    });
-  }
+    console.log(error)
   }
 
 exports.createUser = async (req, res) => {
@@ -87,64 +67,20 @@ exports.createUser = async (req, res) => {
       });
     }
 
-    removeFields(UserCreateExcludedFields, req.body);
-
-    const userVerificationToken = await generateVerificationToken();
+    removeFields(UserCreateExcludedFields, req.body)
 
     let hashedPassword = await hashUserPassword(req.body.password);
     req.body.password = hashedPassword;
 
     const { msg, resource, extra } = await createDocument(req, res, User);
 
-    await User.findOneAndUpdate(
-      { email: req.body.email },
-      { verificationToken: userVerificationToken }
-    );
-
-    const data = {
-      fullName: req.body.fullName,
-      magicLink: `${process.env.BASE_URL}/api/v1/users/profile/verify?verificationToken=${userVerificationToken}`,
-    };
-
-    ejs.renderFile(
-      "./views/welcomeEmail.ejs",
-      data,
-      async (err, renderedHtml) => {
-        if (err) {
-          console.error("Error rendering template:", err);
-          return;
-        }
-
-        const mailOptions = {
-          to: req.body.email,
-          from: process.env.SENDER_EMAIL,
-          subject: "Verify Your SchoolBook Account",
-        };
-        //   // Add the HTML content to the mail options
-        mailOptions.html = renderedHtml;
-
-        // Send the email
-        await sendMailWithSendgrid(mailOptions);
-        // await publishToRabbitMQ(mailOptions)
-        //   .then(() => {
-        //     consumeFromRabbitMQ();
-        //   })
-        //   .catch((error) => {
-        //     console.error("Error:", error);
-        //   });
-      }
-    );
-
-    //await logs(req, "User created", "User created");
-    return res.status(statusCodes[201]).json({
-      statusCode: statusCodes[201],
-      responseText: responseText.SUCCESS,
-      data: resource,
-      msg,
-      extra,
-    });
+     return res.status(statusCodes[201]).json({
+       statusCode: statusCodes[201],
+       responseText: responseText.SUCCESS,
+       data: created,
+     });
   } catch (error) {
-    next(error);
+    console.log(error)
   }
 };
 exports.updateUser = async (req, res) => {
@@ -285,15 +221,13 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.forgotPassword = async (req, res) => {
-  try {
-    const { email } = req.body;
-    //validation
-    await validationCheck(req, res);
-    //CHECK IF USER EXIST
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      let { passwordResetToken, passwordResetTokenExpires } =
-        await generatePasswordResetToken();
+  const { email } = req.body;
+  //validation
+  await validationCheck(req, res);
+  //CHECK IF USER EXIST
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    let passwordResetCode
 
       const updatedResource = await User.findOneAndUpdate(
         { email },
