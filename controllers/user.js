@@ -51,7 +51,7 @@ exports.createUser = async (req, res) => {
     })
 
     if (existingUser) {
-        return res.status(statusCodes[400]).send({
+        return res.status(statusCodes[400]).json({
           statusCode: statusCodes[400],
           responseText: responseText.FAIL,
           errors: [{ msg: `Email ${req.body.email} already exist` }],
@@ -65,7 +65,7 @@ exports.createUser = async (req, res) => {
 
     let created = await createDocument(req,res,User)
 
-     res.status(statusCodes[201]).json({
+     return res.status(statusCodes[201]).json({
        statusCode: statusCodes[201],
        responseText: responseText.SUCCESS,
        data: created,
