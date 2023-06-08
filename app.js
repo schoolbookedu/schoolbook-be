@@ -9,7 +9,14 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const fs = require("fs");
+const ejs = require('ejs')
 
+const template = fs.readFileSync("./views/welcomeEmail.ejs", "utf8");
+const data = {
+  fullName: "John Doe",
+  magicLink: "https://google.com",
+};
 
 //user defined modules
 
@@ -68,11 +75,15 @@ app.use((req, res, next) => {
 
 //routes
 app.get("/", (req, res) => {
-  res.json({
-    statusCode: 200,
-    data: `welcome ${req.ip}`,
-    statusText: "Success",
-  });
+  // res.json({
+  //   statusCode: 200,
+  //   data: `welcome ${req.ip}`,
+  //   statusText: "Success",
+  // });
+
+  const renderTemplate = ejs.render(template, data);
+
+res.send(renderTemplate)
 });
 
 app.use("/api/v1/users", userRouter); //users route

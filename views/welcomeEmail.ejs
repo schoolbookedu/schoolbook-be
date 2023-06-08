@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome on board</title>
+    <link rel="stylesheet" href="/css/welcomeEmail.css">
+</head>
+<body>
+    <div class="logo">
+        <img src="/logo.jpg" alt="schoolBook logo">
+    </div>
+
+    <div class="header">
+        <h1>SchoolBook Edu Limited</h1>
+    </div>
+
+    <p>Dear <%= fullName %>,</p>
+
+    <p> Thank you for choosing schoolBook! We just need to verify your email address to finalize your registration process</p>
+    <p>Once your email is verified, you'll gain full access to all the features and benefits of the platform</p>
+    <p>If you didn't initiate this registration, please disregard this email and be rest assured that your information remains secured</p>
+    <p>To complete this verification process, please click the button below</p>
+
+    <div class="button">
+        <a href="<%= magicLink %>">Verify Your Email</a>
+    </div>
+</body>
+</html>

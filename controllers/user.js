@@ -60,16 +60,38 @@ exports.createUser = async (req, res) => {
 
     removeFields(UserCreateExcludedFields, req.body)
 
+    
+
     let hashedPassword = await hashUserPassword(req.body.password);
+    console.log(hashedPassword)
     req.body.password = hashedPassword;
+    req.body.verificationToken = User.generateToken()
 
     let created = await createDocument(req,res,User)
+
+
+        const mailOptions = {
+          to: req.body.email, // Change to your recipient
+          from: process.env.SENDER_EMAIL, // Change to your verified sender
+          subject: "Verify Your SchoolBook Account",
+          text: `Dear ${req.body.fullName}, welcome to SchoolBook . Please use this code to verify your SchoolBook account so you can have full access to the platform`,
+        };
+
+        //send email
+        await sendMailWithSendgrid(mailOptions);
+        //await logs(req, "User created", "User created");
+        res.status(statusCodes[201]).json({
+          statusCode: statusCodes[201],
+          responseText: responseText.SUCCESS,
+          data: created,
+        });
 
      return res.status(statusCodes[201]).json({
        statusCode: statusCodes[201],
        responseText: responseText.SUCCESS,
        data: created,
      });
+     
   } catch (error) {
     console.log(error)
   }

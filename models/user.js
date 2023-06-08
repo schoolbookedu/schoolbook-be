@@ -2,6 +2,7 @@ const { Schema, model } = require("mongoose");
 const { userTypes } = require("../utils/userTypes");
 const { gender } = require("../utils/gender");
 const { level } = require("../utils/level");
+const { v4: uuidv4 } = require("uuid");
 const userSchema = new Schema({
   fullName: {
     type: String,
@@ -70,7 +71,17 @@ const userSchema = new Schema({
   passwordResetTokenExpires: {
     type: Date,
   },
+  verificationToken: {
+    type: String,
+    default: ""
+  }
 });
+
+
+
+userSchema.methods.generateToken = async function () {
+  return uuidv4();
+}
 
 const User = model("User", userSchema);
 module.exports = User;

@@ -1,3 +1,4 @@
+const User = require("../models/user");
 const { excludedQueryFields } = require("./excludedFields");
 const { responseText, statusCodes } = require("./response");
 const { generateAccessToken } = require("./token");
@@ -163,9 +164,12 @@ exports.createDocument = async (
 ) => {
   try {
     const createdResource = await model.create(req.body);
-
+    
+    if (model === User) {
+      createdResource.verificationToken = User.generateToken()
+    }
     let resource = { ...createdResource._doc };
-
+    
     if (resource.hasOwnProperty("password")) {
       delete resource.password;
       const payLoad = {
