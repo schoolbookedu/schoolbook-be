@@ -164,12 +164,9 @@ exports.createDocument = async (
 ) => {
   try {
     const createdResource = await model.create(req.body);
-    
-    if (model === User) {
-      createdResource.verificationToken = User.generateToken()
-    }
+
     let resource = { ...createdResource._doc };
-    
+
     if (resource.hasOwnProperty("password")) {
       delete resource.password;
       const payLoad = {

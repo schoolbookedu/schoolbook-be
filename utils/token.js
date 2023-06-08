@@ -29,3 +29,12 @@ exports.generatePasswordResetToken = async() => {
         console.log(error);
     }
 };
+
+exports.generateVerificationToken  = async function () {
+    try {
+        const userVerificationToken = crypto.randomBytes(32).toString("hex");
+         return userVerificationToken
+    } catch (error) {
+        console.log(error)
+    }
+}

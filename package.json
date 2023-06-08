@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
+    "amqplib": "^0.10.3",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.32.0",
     "coinbase-commerce-node": "^1.0.4",

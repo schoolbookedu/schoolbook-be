@@ -18,89 +18,120 @@ const {
   decryptPassword,
   hashUserPassword,
 } = require("../utils/passwordManipulation");
-const { generateAccessToken } = require("../utils/token");
+const {
+  generateAccessToken,
+  generateVerificationToken,
+} = require("../utils/token");
 const { removeFields } = require("../utils/handleExcludedFields");
-const { sendMailWithSendgrid } = require("../utils/mailing");
+const {
+  publishToRabbitMQ,
+  sendMailWithSendgrid,
+  consumeFromRabbitMQ,
+} = require("../utils/mailing");
 const { validationCheck } = require("../utils/validationCheck");
 const { userTypes } = require("../utils/userTypes");
 const { uploadImage } = require("../utils/imageProcessing");
 const { logs } = require("../utils/log");
+const ejs = require("ejs");
 
 const User = require("../models/user");
 
 exports.getAllUser = async (req, res) => {
   try {
-    getAll(req,res,User, UserGetExcludedFields)
+    getAll(req, res, User, UserGetExcludedFields);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 exports.getAUser = async (req, res) => {
   try {
-    getOne(req, res, User, UserGetExcludedFields)
+    getOne(req, res, User, UserGetExcludedFields);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 exports.createUser = async (req, res) => {
   try {
-    await validationCheck(req,res);
+    await validationCheck(req, res);
 
     const existingUser = await User.findOne({
-        email: req.body.email
-    })
+      email: req.body.email,
+    });
 
     if (existingUser) {
-        return res.status(statusCodes[400]).json({
-          statusCode: statusCodes[400],
-          responseText: responseText.FAIL,
-          errors: [{ msg: `Email ${req.body.email} already exist` }],
-        });
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: `Email ${req.body.email} already exist` }],
+      });
     }
 
-    removeFields(UserCreateExcludedFields, req.body)
+    removeFields(UserCreateExcludedFields, req.body);
 
-    
+    const userVerificationToken = await generateVerificationToken();
 
     let hashedPassword = await hashUserPassword(req.body.password);
-    console.log(hashedPassword)
     req.body.password = hashedPassword;
-    req.body.verificationToken = User.generateToken()
 
-    let created = await createDocument(req,res,User)
+    const { msg, resource, extra } = await createDocument(req, res, User);
 
+    await User.findOneAndUpdate(
+      { email: req.body.email },
+      { verificationToken: userVerificationToken }
+    );
+
+    const data = {
+      fullName: req.body.fullName,
+      magicLink: `http://localhost:4000/api/v1/users/verify?verificationToken=${userVerificationToken}`,
+    };
+
+    ejs.renderFile(
+      "./views/welcomeEmail.ejs",
+      data,
+      async (err, renderedHtml) => {
+        if (err) {
+          console.error("Error rendering template:", err);
+          return;
+        }
 
         const mailOptions = {
-          to: req.body.email, // Change to your recipient
-          from: process.env.SENDER_EMAIL, // Change to your verified sender
+          to: req.body.email,
+          from: process.env.SENDER_EMAIL, 
           subject: "Verify Your SchoolBook Account",
-          text: `Dear ${req.body.fullName}, welcome to SchoolBook . Please use this code to verify your SchoolBook account so you can have full access to the platform`,
         };
+      //   // Add the HTML content to the mail options
+        mailOptions.html = renderedHtml;
 
-        //send email
+        // Send the email
         await sendMailWithSendgrid(mailOptions);
-        //await logs(req, "User created", "User created");
-        res.status(statusCodes[201]).json({
-          statusCode: statusCodes[201],
-          responseText: responseText.SUCCESS,
-          data: created,
-        });
+        await publishToRabbitMQ(mailOptions)
+          .then(() => {
+            consumeFromRabbitMQ();
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
 
-     return res.status(statusCodes[201]).json({
-       statusCode: statusCodes[201],
-       responseText: responseText.SUCCESS,
-       data: created,
-     });
-     
+      }
+    );
+
+    //await logs(req, "User created", "User created");
+    return res.status(statusCodes[201]).json({
+      statusCode: statusCodes[201],
+      responseText: responseText.SUCCESS,
+      data: resource,
+      msg,
+      extra,
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 exports.updateUser = async (req, res) => {
   try {
-     await validationCheck(req, res);
-     removeFields(UserUpdateExcludedFields, req.body);
-     updateDocument(req, res, User, "User updated successfully");
+    await validationCheck(req, res);
+    removeFields(UserUpdateExcludedFields, req.body);
+    updateDocument(req, res, User, "User updated successfully");
   } catch (error) {
     console.log(error);
   }
@@ -201,7 +232,7 @@ exports.forgotPassword = async (req, res) => {
   //CHECK IF USER EXIST
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    let passwordResetCode
+    let passwordResetCode;
 
     const updatedResoure = await User.findOneAndUpdate(
       { email },

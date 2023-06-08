@@ -2,6 +2,7 @@ exports.UserCreateExcludedFields = [
   "passwordResetToken",
   "passwordResetTokenExpires",
   "isVerified",
+  "verificationToken"
 ];
 
 exports.UserExcludedFields = [];

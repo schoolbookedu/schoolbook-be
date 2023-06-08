@@ -78,10 +78,5 @@ const userSchema = new Schema({
 });
 
 
-
-userSchema.methods.generateToken = async function () {
-  return uuidv4();
-}
-
 const User = model("User", userSchema);
 module.exports = User;
