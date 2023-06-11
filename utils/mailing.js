@@ -58,7 +58,7 @@ async function consumeFromRabbitMQ() {
       try {
         // Process the emailData and send the email via SendGrid
         await sendMailWithSendgrid(emailData);
-        console.log("Email sent:", emailData);
+        console.log("Email sent");
         channel.ack(message); // Acknowledge the message after successful processing
       } catch (error) {
         console.log("Error sending email:", error);

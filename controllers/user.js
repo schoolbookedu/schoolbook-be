@@ -103,7 +103,6 @@ exports.createUser = async (req, res) => {
         mailOptions.html = renderedHtml;
 
         // Send the email
-        await sendMailWithSendgrid(mailOptions);
         await publishToRabbitMQ(mailOptions)
           .then(() => {
             consumeFromRabbitMQ();
