@@ -6,6 +6,7 @@ const {
   loginUser,
   updateUser,
   deleteUser,
+  verifyUser,
 } = require("../controllers/user");
 const { authenticate, authorize } = require("../middlewares/auth");
 const {
@@ -21,5 +22,6 @@ userRouter.post("/", UserCreationValidation, createUser);
 userRouter.post("/login", loginUser);
 userRouter.patch("/:id", authenticate, UserUpdateValidation, updateUser);
 userRouter.delete("/:id", authenticate, deleteUser);
+userRouter.get('/profile/verify', verifyUser)
 
 module.exports = { userRouter };

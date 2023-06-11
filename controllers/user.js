@@ -82,7 +82,7 @@ exports.createUser = async (req, res) => {
 
     const data = {
       fullName: req.body.fullName,
-      magicLink: `http://localhost:4000/api/v1/users/verify?verificationToken=${userVerificationToken}`,
+      magicLink: `${process.env.BASE_URL}/api/v1/users/profile/verify?verificationToken=${userVerificationToken}`,
     };
 
     ejs.renderFile(
@@ -225,40 +225,94 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.forgotPassword = async (req, res) => {
-  const { email } = req.body;
-  //validation
-  await validationCheck(req, res);
-  //CHECK IF USER EXIST
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    let passwordResetCode;
+  try {
+     const { email } = req.body;
+     //validation
+     await validationCheck(req, res);
+     //CHECK IF USER EXIST
+     const existingUser = await User.findOne({ email });
+     if (existingUser) {
+       let passwordResetCode;
 
-    const updatedResoure = await User.findOneAndUpdate(
-      { email },
-      { passwordResetCode },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-    const mailOptions = {
-      to: email, // Change to your recipient
-      from: process.env.SENDER_EMAIL, // Change to your verified sender
-      subject: "Forgot Your SchoolBook Account Password",
-      text: `Use this code ${passwordResetCode} to reset your account password`,
-    };
+       const updatedResoure = await User.findOneAndUpdate(
+         { email },
+         { passwordResetCode },
+         {
+           new: true,
+           runValidators: true,
+         }
+       );
+       const mailOptions = {
+         to: email, // Change to your recipient
+         from: process.env.SENDER_EMAIL, // Change to your verified sender
+         subject: "Forgot Your SchoolBook Account Password",
+         text: `Use this code ${passwordResetCode} to reset your account password`,
+       };
 
-    //send email
-    await sendMailWithSendgrid(mailOptions);
+       //send email
+       await publishToRabbitMQ(mailOptions)
+         .then(() => {
+           consumeFromRabbitMQ();
+         })
+         .catch((error) => {
+           console.error("Error:", error);
+         });
+     }
+
+     return res.status(statusCodes[200]).send({
+       statusCode: statusCodes[200],
+       responseText: responseText.SUCCESS,
+       data: {
+         msg: `A passord reset code has been sent to your email ${email}`,
+         resource: {},
+         extra: {},
+       },
+     });
+  } catch (error) {
+     console.log(error);
+     return res.status(statusCodes[500]).json({
+       statusCode: statusCodes[500],
+       responseText: responseText.FAIL,
+       errors: [
+         {
+           msg: error.message || "Something went wrong, Please try again later",
+         },
+       ],
+     });
   }
-
-  return res.status(statusCodes[200]).send({
-    statusCode: statusCodes[200],
-    responseText: responseText.SUCCESS,
-    data: {
-      msg: `A passord reset code has been sent to your email ${email}`,
-      resource: {},
-      extra: {},
-    },
-  });
 };
+
+exports.verifyUser = async (req, res, next) => {
+  try {
+    const {verificationToken} = req.query
+
+    const user = await User.findOne({ verificationToken: verificationToken});
+
+     if (!user) {
+       return res.status(statusCodes[400]).send({
+         statusCode: statusCodes[400],
+         responseText: responseText.FAIL,
+         errors: [{ msg: `Invalid token` }],
+       });
+     }
+
+     if(user.isVerified) {
+      return res.status(statusCodes[400]).send({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: `This user is already verified` }],
+      });
+     }
+
+     user.isVerified = true;
+     user.verificationToken = undefined;
+     await user.save();
+
+    //  const redirectUrl = ""; frontend login page url goes here
+    //  res.redirect(redirectUrl);
+    res.send('verification sucessful')
+
+  } catch (error) {
+    next(error)
+  }
+}
