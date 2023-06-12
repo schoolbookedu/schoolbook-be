@@ -76,6 +76,7 @@ exports.createUser = async (req, res) => {
 
     await User.findOneAndUpdate(
       { email: req.body.email },
+      { verificationToken: userVerificationToken }
     );
 
     const data = {
@@ -94,10 +95,10 @@ exports.createUser = async (req, res) => {
 
         const mailOptions = {
           to: req.body.email,
-          from: process.env.SENDER_EMAIL, 
+          from: process.env.SENDER_EMAIL,
           subject: "Verify Your SchoolBook Account",
         };
-      //   // Add the HTML content to the mail options
+        //   // Add the HTML content to the mail options
         mailOptions.html = renderedHtml;
 
         // Send the email
@@ -108,18 +109,19 @@ exports.createUser = async (req, res) => {
           .catch((error) => {
             console.error("Error:", error);
           });
-
       }
     );
 
     //await logs(req, "User created", "User created");
     return res.status(statusCodes[201]).json({
+      statusCode: statusCodes[201],
+      responseText: responseText.SUCCESS,
       data: resource,
       msg,
       extra,
     });
   } catch (error) {
-    console.log(error);
+    next(error)
   }
 };
 exports.updateUser = async (req, res) => {
