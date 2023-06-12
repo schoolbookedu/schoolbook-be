@@ -25,7 +25,6 @@ const {
 const { removeFields } = require("../utils/handleExcludedFields");
 const {
   publishToRabbitMQ,
-  sendMailWithSendgrid,
   consumeFromRabbitMQ,
 } = require("../utils/mailing");
 const { validationCheck } = require("../utils/validationCheck");
@@ -77,7 +76,6 @@ exports.createUser = async (req, res) => {
 
     await User.findOneAndUpdate(
       { email: req.body.email },
-      { verificationToken: userVerificationToken }
     );
 
     const data = {
@@ -116,8 +114,6 @@ exports.createUser = async (req, res) => {
 
     //await logs(req, "User created", "User created");
     return res.status(statusCodes[201]).json({
-      statusCode: statusCodes[201],
-      responseText: responseText.SUCCESS,
       data: resource,
       msg,
       extra,
