@@ -44,9 +44,7 @@ async function publishToRabbitMQ(message) {
 
 async function consumeFromRabbitMQ() {
   try {
-    const connection = await amqp.connect(
-      `amqp://https://schoolbook-api.onrender.com`
-    );
+    const connection = await amqp.connect(`amqp://${process.env.HOST_NAME}`);
     const channel = await connection.createChannel();
     console.log("Connected to RabbitMQ");
 
