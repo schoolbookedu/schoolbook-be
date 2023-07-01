@@ -21,11 +21,13 @@ const {
 const {
   generateAccessToken,
   generateVerificationToken,
+  generatePasswordResetToken,
 } = require("../utils/token");
 const { removeFields } = require("../utils/handleExcludedFields");
 const {
   publishToRabbitMQ,
   consumeFromRabbitMQ,
+  sendMailWithSendgrid,
 } = require("../utils/mailing");
 const { validationCheck } = require("../utils/validationCheck");
 const { userTypes } = require("../utils/userTypes");
@@ -40,15 +42,35 @@ exports.getAllUser = async (req, res) => {
     getAll(req, res, User, UserGetExcludedFields);
   } catch (error) {
     console.log(error);
+      return res.status(statusCodes[500]).json({
+      statusCode: statusCodes[500],
+      responseText: responseText.FAIL,
+      errors: [
+        {
+          msg: error.message || "Something went wrong, Please try again later",
+        },
+      ],
+    });
   }
-};
+  }
+
 exports.getAUser = async (req, res) => {
   try {
     getOne(req, res, User, UserGetExcludedFields);
   } catch (error) {
     console.log(error);
+      return res.status(statusCodes[500]).json({
+      statusCode: statusCodes[500],
+      responseText: responseText.FAIL,
+      errors: [
+        {
+          msg: error.message || "Something went wrong, Please try again later",
+        },
+      ],
+    });
   }
-};
+  }
+
 exports.createUser = async (req, res) => {
   try {
     await validationCheck(req, res);
@@ -102,13 +124,14 @@ exports.createUser = async (req, res) => {
         mailOptions.html = renderedHtml;
 
         // Send the email
-        await publishToRabbitMQ(mailOptions)
-          .then(() => {
-            consumeFromRabbitMQ();
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+        await sendMailWithSendgrid(mailOptions);
+        // await publishToRabbitMQ(mailOptions)
+        //   .then(() => {
+        //     consumeFromRabbitMQ();
+        //   })
+        //   .catch((error) => {
+        //     console.error("Error:", error);
+        //   });
       }
     );
 
@@ -121,7 +144,7 @@ exports.createUser = async (req, res) => {
       extra,
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 exports.updateUser = async (req, res) => {
@@ -131,13 +154,34 @@ exports.updateUser = async (req, res) => {
     updateDocument(req, res, User, "User updated successfully");
   } catch (error) {
     console.log(error);
+      return res.status(statusCodes[500]).json({
+      statusCode: statusCodes[500],
+      responseText: responseText.FAIL,
+      errors: [
+        {
+          msg: error.message || "Something went wrong, Please try again later",
+        },
+      ],
+    });
   }
-};
+  }
+
 exports.uploadAvatar = async (req, res) => {
   try {
+    const userId = req.params.id
+    const file = req.file;
     await validationCheck(req, res);
+
+     if (!file) {
+        return res.status(statusCodes[400]).json({
+          statusCode: statusCodes[400],
+          responseText: responseText.FAIL,
+          errors: [{ msg: `No file uploaded` }],
+        });
+     }
+
     let imageUrl = await uploadImage(
-      req.body.avatar,
+      file,
       "avatar",
       "SchoolBook-Avatar"
     );
@@ -146,14 +190,32 @@ exports.uploadAvatar = async (req, res) => {
     updateDocument(req, res, User, "Avater upload successful");
   } catch (error) {
     console.log(error);
+      return res.status(statusCodes[500]).json({
+      statusCode: statusCodes[500],
+      responseText: responseText.FAIL,
+      errors: [
+        {
+          msg: error.message || "Something went wrong, Please try again later",
+        },
+      ],
+    });
   }
-};
+  }
 
 exports.deleteUser = async (req, res) => {
   try {
     deleteDocument(req, res, User);
   } catch (error) {
     console.log(error);
+    return res.status(statusCodes[500]).json({
+      statusCode: statusCodes[500],
+      responseText: responseText.FAIL,
+      errors: [
+        {
+          msg: error.message || "Something went wrong, Please try again later",
+        },
+      ],
+    });
   }
 };
 
@@ -224,93 +286,174 @@ exports.loginUser = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
   try {
-     const { email } = req.body;
-     //validation
-     await validationCheck(req, res);
-     //CHECK IF USER EXIST
-     const existingUser = await User.findOne({ email });
-     if (existingUser) {
-       let passwordResetCode;
+    const { email } = req.body;
+    //validation
+    await validationCheck(req, res);
+    //CHECK IF USER EXIST
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      let { passwordResetToken, passwordResetTokenExpires } =
+        await generatePasswordResetToken();
 
-       const updatedResoure = await User.findOneAndUpdate(
-         { email },
-         { passwordResetCode },
-         {
-           new: true,
-           runValidators: true,
-         }
-       );
-       const mailOptions = {
-         to: email, // Change to your recipient
-         from: process.env.SENDER_EMAIL, // Change to your verified sender
-         subject: "Forgot Your SchoolBook Account Password",
-         text: `Use this code ${passwordResetCode} to reset your account password`,
-       };
+      const updatedResource = await User.findOneAndUpdate(
+        { email },
+        { passwordResetToken, passwordResetTokenExpires },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
 
-       //send email
-       await publishToRabbitMQ(mailOptions)
-         .then(() => {
-           consumeFromRabbitMQ();
-         })
-         .catch((error) => {
-           console.error("Error:", error);
-         });
-     }
+      const mailOptions = {
+        to: email, // Change to your recipient
+        from: process.env.SENDER_EMAIL, // Change to your verified sender
+        subject: "Forgot Your SchoolBook Account Password",
+        text: `Use this code ${passwordResetToken} to reset your account password`,
+      };
 
-     return res.status(statusCodes[200]).send({
-       statusCode: statusCodes[200],
-       responseText: responseText.SUCCESS,
-       data: {
-         msg: `A passord reset code has been sent to your email ${email}`,
-         resource: {},
-         extra: {},
-       },
-     });
+      //send email
+      await sendMailWithSendgrid(mailOptions);
+      //  await publishToRabbitMQ(mailOptions)
+      //    .then(() => {
+      //      consumeFromRabbitMQ();
+      //    })
+      //    .catch((error) => {
+      //      console.error("Error:", error);
+      //    });
+    }
+
+    return res.status(statusCodes[200]).send({
+      statusCode: statusCodes[200],
+      responseText: responseText.SUCCESS,
+      data: {
+        msg: `A passord reset code has been sent to your email ${email}`,
+        resource: {},
+        extra: {},
+      },
+    });
   } catch (error) {
-     console.log(error);
-     return res.status(statusCodes[500]).json({
-       statusCode: statusCodes[500],
-       responseText: responseText.FAIL,
-       errors: [
-         {
-           msg: error.message || "Something went wrong, Please try again later",
-         },
-       ],
-     });
+    console.log(error);
+    return res.status(statusCodes[500]).json({
+      statusCode: statusCodes[500],
+      responseText: responseText.FAIL,
+      errors: [
+        {
+          msg: error.message || "Something went wrong, Please try again later",
+        },
+      ],
+    });
   }
 };
 
 exports.verifyUser = async (req, res, next) => {
   try {
-    const {verificationToken} = req.query
+    const { verificationToken } = req.query;
 
-    const user = await User.findOne({ verificationToken: verificationToken});
+    const user = await User.findOne({ verificationToken: verificationToken });
 
-     if (!user) {
-       return res.status(statusCodes[400]).send({
-         statusCode: statusCodes[400],
-         responseText: responseText.FAIL,
-         errors: [{ msg: `Invalid token` }],
-       });
-     }
+    if (!user) {
+      return res.status(statusCodes[400]).send({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: `Invalid token` }],
+      });
+    }
 
-     if(user.isVerified) {
+    if (user.isVerified) {
       return res.status(statusCodes[400]).send({
         statusCode: statusCodes[400],
         responseText: responseText.FAIL,
         errors: [{ msg: `This user is already verified` }],
       });
-     }
+    }
 
-     user.isVerified = true;
-     user.verificationToken = undefined;
-     await user.save();
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
 
     //  const redirectUrl = ""; frontend login page url goes here
     //  res.redirect(redirectUrl);
-    res.send('verification sucessful')
-
+    res.send("verification sucessful");
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const { passwordResetToken, newPassword, confirmPassword } = req.body;
+
+    const validResetToken = await User.findOne({
+      passwordResetToken: passwordResetToken,
+    });
+
+    if (
+      !validResetToken ||
+      (validResetToken &&
+        validResetToken.passwordResetTokenExpires < Date.now())
+    ) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [
+          {
+            msg: "Reset token has expired or does not exist",
+          },
+        ],
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [
+          {
+            msg: "Passwords do not match",
+          },
+        ],
+      });
+    }
+
+    const hashedPassword = await hashUserPassword(req.body.newPassword);
+    req.body.newPassword = hashedPassword;
+    req.body.confirmPassword = hashedPassword;
+
+    const updatedResource = await User.findOneAndUpdate(
+      { email: validResetToken.email },
+      { password: hashedPassword },
+      { new: true, runValidators: true }
+    );
+
+    const mailOptions = {
+        to: validResetToken.email, // Change to your recipient
+        from: process.env.SENDER_EMAIL, // Change to your verified sender
+        subject: "Password Reset Successful",
+        text: `You have successfully reset the password on your account. Please contact support if this wasn't done by you.`,
+      };
+
+      //send email
+      await sendMailWithSendgrid(mailOptions);
+    
+       return res.status(statusCodes[200]).send({
+         statusCode: statusCodes[200],
+         responseText: responseText.SUCCESS,
+         data: {
+           msg: `Password reset was successful`,
+           resource: {},
+           extra: {},
+         },
+       });
+  } catch (error) {
+    console.log(error);
+    return res.status(statusCodes[500]).json({
+      statusCode: statusCodes[500],
+      responseText: responseText.FAIL,
+      errors: [
+        {
+          msg: error.message || "Something went wrong, Please try again later",
+        },
+      ],
+    });
+  }
+};

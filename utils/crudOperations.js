@@ -112,6 +112,10 @@ exports.updateDocument = async (req, res, model, msg = "Successful") => {
       }
     );
 
+    if(updatedResoure.password) {
+      updatedResoure.password = "*****"
+    }
+
     return res.status(statusCodes[200]).json({
       statusCode: statusCodes[200],
       responseText: responseText.SUCCESS,

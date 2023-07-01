@@ -7,12 +7,16 @@ const {
   updateUser,
   deleteUser,
   verifyUser,
+  forgotPassword,
+  resetPassword,
+  uploadAvatar,
 } = require("../controllers/user");
 const { authenticate, authorize } = require("../middlewares/auth");
 const {
   UserCreationValidation,
   UserUpdateValidation,
 } = require("../validations/user.validation");
+const { upload } = require("../utils/imageProcessing");
 
 const userRouter = express.Router();
 
@@ -23,5 +27,9 @@ userRouter.post("/login", loginUser);
 userRouter.patch("/:id", authenticate, UserUpdateValidation, updateUser);
 userRouter.delete("/:id", authenticate, deleteUser);
 userRouter.get('/profile/verify', verifyUser)
+userRouter.post("/forgot-password", forgotPassword);
+userRouter.post('/reset-password', resetPassword);
+userRouter.patch('/:id/avatar', authenticate, upload.single("avatar"), uploadAvatar)
+
 
 module.exports = { userRouter };
