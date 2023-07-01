@@ -2,7 +2,6 @@ const { Schema, model } = require("mongoose");
 const { userTypes } = require("../utils/userTypes");
 const { gender } = require("../utils/gender");
 const { level } = require("../utils/level");
-const { v4: uuidv4 } = require("uuid");
 const userSchema = new Schema({
   fullName: {
     type: String,
@@ -67,14 +66,16 @@ const userSchema = new Schema({
   },
   passwordResetToken: {
     type: String,
+    default: "",
   },
   passwordResetTokenExpires: {
     type: Date,
+    default: Date.now()
   },
   verificationToken: {
     type: String,
-    default: ""
-  }
+    default: "",
+  },
 });
 
 
