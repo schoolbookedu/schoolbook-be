@@ -37,7 +37,7 @@ const filterFileType = (req, file, cb) => {
 exports.upload = multer({ storage: multerStorage, fileFilter: filterFileType });
 exports.cloudinary = cloudinary;
 
-exports.uploadImage = async (file, field, folder) => {
+exports.uploadFile = async (img, field, folder) => {
   let imageURL = "";
 
   const tempDirectory = path.join(__dirname, "../tmp");

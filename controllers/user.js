@@ -31,7 +31,7 @@ const {
 } = require("../utils/mailing");
 const { validationCheck } = require("../utils/validationCheck");
 const { userTypes } = require("../utils/userTypes");
-const { uploadImage } = require("../utils/imageProcessing");
+const { uploadFile} = require("../utils/imageProcessing");
 const { logs } = require("../utils/log");
 const ejs = require("ejs");
 
