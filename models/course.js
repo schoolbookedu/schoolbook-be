@@ -23,11 +23,11 @@ const courseSchema = new Schema({
       materialTitle: { type: String },
       thumbnail: { type: String },
       materialType: { type: String, enum: materialType },
-      materialId: {
-        type: Schema.Types.ObjectId,
-        ref: "Material",
-        required: true,
-      },
+      // materialId: {
+      //   type: Schema.Types.ObjectId,
+      //   ref: "Material",
+      //   required: true,
+      // },
     },
   ],
   enrollmentCount: {

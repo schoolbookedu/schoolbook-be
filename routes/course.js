@@ -13,8 +13,8 @@ const courseRouter = express.Router();
 
 courseRouter.get("/", authenticate, getAllCourse);
 courseRouter.get("/:id", authenticate, getACourse);
-courseRouter.post("/", CourseCreationValidation, createCourse);
-courseRouter.patch("/", CourseUpdateValidation, updateCourse);
+courseRouter.post("/", authenticate, createCourse);
+courseRouter.patch("/:id", CourseUpdateValidation, updateCourse);
 courseRouter.delete("/:id", authenticate, deleteCourse);
 
 module.exports = { courseRouter };
