@@ -25,13 +25,17 @@ const multerStorage = multer.memoryStorage({
 });
 
 const filterFileType = (req, file, cb) => {
-  const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif"];
+  const allowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif",];
+  const allowedVideoExtensions = ["flv","mov","mkv","mp4","webm","mpd","ogv"]
+
+  const allowedExtensions=[...allowedImageExtensions,...allowedVideoExtensions];
+
   const fileExtension = path.extname(file.originalname).toLowerCase();
 
   if (allowedExtensions.includes(fileExtension)) {
     cb(null, true);
   } else {
-    cb(new Error("Only image files are allowed"), false);
+    cb(new Error(`Only ${allowedExtensions.join(",")} extensions are allowed`), false);
   }
 };
 exports.upload = multer({ storage: multerStorage, fileFilter: filterFileType });
