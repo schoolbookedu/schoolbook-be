@@ -54,7 +54,7 @@ exports.uploadFile = async (img, field, folder) => {
   await cloudinary.uploader.upload(
     tempFilePath,
     {
-      public_id: `${folder}/${field}-${Date.now()}`,
+      public_id: `${folder}/${field}-${Date.now()}`, resource_type:"auto"
     },
     (error, result) => {
       if (error) {
