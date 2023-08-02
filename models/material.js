@@ -13,6 +13,10 @@ const materialSchema = new Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

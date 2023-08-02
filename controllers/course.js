@@ -41,8 +41,6 @@ exports.createCourse = async (req, res, next) => {
        req.body.thumbnail=thumbnailURL
     }
     req.body.tutor= req.user.id
-
-
     let created = await createDocument(req, res, Course);
 
     res.status(statusCodes[201]).json({
@@ -74,3 +72,27 @@ exports.deleteCourse = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.createCourseMaterial=async(req,res, next)=>{
+  try {
+    await validationCheck(req, res);
+
+    removeFields(CourseExcludedFields, req.body);
+    if(req.body.thumbnail){
+       const thumbnailURL = await uploadFile(req.body.thumbnail,"thumbnail","course_thumbnail")
+       req.body.thumbnail=thumbnailURL
+    }
+    req.body.tutor= req.user.id
+    let created = await createDocument(req, res, Course);
+
+    res.status(statusCodes[201]).json({
+      statusCode: statusCodes[201],
+      responseText: responseText.SUCCESS,
+      data: created,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+
+}

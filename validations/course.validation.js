@@ -15,5 +15,11 @@ exports.CourseCreationValidation =  [
     //     }
     // })
 ]
-
+exports.CourseMaterialValidation=[
+    body("title").trim().notEmpty().withMessage("title is required"),
+    body("materialTitle").trim().notEmpty().withMessage("materialTitle is required"),
+    body("materialType").trim().notEmpty().isIn(materialType).withMessage("materialType is required"),
+    body("materialId").trim().notEmpty().withMessage("materialId is required"),
+    
+]
 exports.CourseUpdateValidation = []

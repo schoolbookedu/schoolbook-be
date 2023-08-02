@@ -20,6 +20,7 @@ const courseSchema = new Schema({
   outlines: [
     {
       title: { type: String },
+      userId: { type: Schema.Types.ObjectId},
       materialTitle: { type: String },
       thumbnail: { type: String },
       materialType: { type: String, enum: materialType },
