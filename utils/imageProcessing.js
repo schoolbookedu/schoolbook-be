@@ -44,19 +44,19 @@ exports.cloudinary = cloudinary;
 exports.uploadFile = async (img, field, folder) => {
   let imageURL = "";
 
-  const tempDirectory = path.join(__dirname, "../tmp");
-  const tempFilePath = path.join(tempDirectory, `${field}-${Date.now()}`);
+  // const tempDirectory = path.join(__dirname, "../tmp");
+  // const tempFilePath = path.join(tempDirectory, `${field}-${Date.now()}`);
 
-  // Create the 'tmp' directory if it doesn't exist
-  if (!fs.existsSync(tempDirectory)) {
-    fs.mkdirSync(tempDirectory);
-  }
+  // // Create the 'tmp' directory if it doesn't exist
+  // if (!fs.existsSync(tempDirectory)) {
+  //   fs.mkdirSync(tempDirectory);
+  // }
 
-  // Save the file from the buffer to the temporary location
-  await writeFileAsync(tempFilePath, file.buffer);
+  // // Save the file from the buffer to the temporary location
+  // await writeFileAsync(tempFilePath, file.buffer);
 
   await cloudinary.uploader.upload(
-    tempFilePath,
+    img,
     {
       public_id: `${folder}/${field}-${Date.now()}`, resource_type:"auto"
     },
@@ -70,7 +70,7 @@ exports.uploadFile = async (img, field, folder) => {
   );
 
   // Delete the temporary file
-  fs.unlinkSync(tempFilePath);
+  //fs.unlinkSync(tempFilePath);
 
   return imageURL;
 };
