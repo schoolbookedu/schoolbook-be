@@ -22,6 +22,38 @@ const {
       next(error);
     }
   };
+
+  exports.getAllMaterial = async (req, res, next) => {
+    try {
+        await validationCheck(req, res);
+    
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
+
+  exports.updateMaterial = async (req, res, next) => {
+    try {
+        await validationCheck(req, res);
+    
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
+  exports.deleteMaterial = async (req, res, next) => {
+    try {
+        await validationCheck(req, res);
+    
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
+
+
+ 
   
   
   

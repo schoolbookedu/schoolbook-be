@@ -73,7 +73,7 @@ exports.deleteCourse = async (req, res, next) => {
   }
 };
 
-exports.createCourseMaterial=async(req,res, next)=>{
+exports.createCourseMaterial = async(req,res, next)=>{
   try {
     await validationCheck(req, res);
 
