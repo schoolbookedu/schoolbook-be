@@ -7,6 +7,7 @@ const {
 } = require("../controllers/material");
 const { authenticate, authorize } = require("../middlewares/auth");
 const {MaterialCreationValidation } = require("../validations/material.validation");
+const {userTypes}= require("../utils/userTypes")
 
 const materialRouter = express.Router();
 
