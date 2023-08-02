@@ -55,6 +55,7 @@ const {
   exports.updateMaterial = async (req, res, next) => {
     try {
         await validationCheck(req, res);
+        updateDocument(req, res, Material, "Material details updated successfully");
     
     } catch (error) {
       console.log(error);
@@ -63,7 +64,7 @@ const {
   };
   exports.deleteMaterial = async (req, res, next) => {
     try {
-        await validationCheck(req, res);
+      deleteDocument(req, res, Material);
     
     } catch (error) {
       console.log(error);
