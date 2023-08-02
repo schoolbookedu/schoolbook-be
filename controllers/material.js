@@ -25,7 +25,26 @@ const {
 
   exports.getAllMaterial = async (req, res, next) => {
     try {
-        await validationCheck(req, res);
+      getAll(req, res, Material, );
+    
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
+  exports.getAMaterial = async (req, res, next) => {
+    try {
+      getOne(req, res, Material, );
+    
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
+  exports.getMyMaterial = async (req, res, next) => {
+    try {
+      req.query.userId= req.user.id
+      getAll(req, res, Material, );
     
     } catch (error) {
       console.log(error);
