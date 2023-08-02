@@ -10,6 +10,7 @@ const { responseText, statusCodes } = require("../utils/response");
 const { removeFields } = require("../utils/handleExcludedFields");
 const { validationCheck } = require("../utils/validationCheck");
 const Course = require("../models/course");
+const {uploadFile}= require("../utils/imageProcessing")
 
 
 exports.getAllCourse = async (req, res, next) => {
@@ -35,6 +36,12 @@ exports.createCourse = async (req, res, next) => {
     await validationCheck(req, res);
 
     removeFields(CourseExcludedFields, req.body);
+    if(req.body.thumbnail){
+       const thumbnailURL = await uploadFile(req.body.thumbnail,"thumbnail","course_thumbnail")
+       req.body.thumbnail=thumbnailURL
+    }
+    req.body.tutor= req.user.id
+
 
     let created = await createDocument(req, res, Course);
 
