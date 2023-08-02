@@ -17,8 +17,8 @@ materialRouter.get("/", authenticate,authorize([ userTypes.Admin]), getAllMateri
 materialRouter.get("/:id", authenticate, getAMaterial);
 materialRouter.get("/my-material", authenticate,authorize([ userTypes.Instructor, userTypes.Developer, userTypes.Admin]), getMyMaterial);
 materialRouter.post("/", authenticate,authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]), MaterialCreationValidation, createMaterial);
-materialRouter.patch("/", authenticate,authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]), MaterialCreationValidation, updateMaterial);
-materialRouter.delete("/", authenticate,authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]), MaterialCreationValidation, deleteMaterial);
+materialRouter.patch("/:id", authenticate,authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]), MaterialCreationValidation, updateMaterial);
+materialRouter.delete("/:id", authenticate,authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]), MaterialCreationValidation, deleteMaterial);
 
 
 
