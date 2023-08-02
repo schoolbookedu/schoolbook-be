@@ -12,11 +12,6 @@ const cookieParser = require("cookie-parser");
 const fs = require("fs");
 const ejs = require('ejs')
 
-// const template = fs.readFileSync("./views/welcomeEmail.ejs", "utf8");
-// const data = {
-//   fullName: "John Doe",
-//   magicLink: "https://google.com",
-// };
 
 //user defined modules
 
