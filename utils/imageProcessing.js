@@ -13,11 +13,11 @@ cloudinary.config({
 
 const multerStorage = multer.memoryStorage({
   destination: function (req, file, cb) {
-    if (file.mimetype.startsWith("image")) {
-      cb(null, "public/img/school-book-images/");
-    } else {
-      cb(new Error("Not an image"), false);
-    }
+    // if (file.mimetype.startsWith("image")) {
+    //   cb(null, "public/img/school-book-images/");
+    // } else {
+    //   cb(new Error("Not an image"), false);
+    // }
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
