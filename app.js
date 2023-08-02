@@ -20,6 +20,7 @@ const { undefinedrouter } = require("./routes/undefinedroute");
 const { universityRouter } = require("./routes/university");
 const { departmentRouter } = require("./routes/department");
 const { courseRouter } = require("./routes/course");
+const {materialRouter}= require("./routes/material");
 
 // db controller
 const connectToDB = require("./utils/dbcon");
@@ -85,6 +86,7 @@ app.use("/api/v1/users", userRouter); //users route
 app.use("/api/v1/universities", universityRouter); //univesity route
 app.use("/api/v1/departments", departmentRouter); //department route
 app.use("/api/v1/courses", courseRouter); //course route
+app.use("/api/v1/materials", materialRouter); //material route
 
 //catch undefined endpoints
 app.use(undefinedrouter);

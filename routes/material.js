@@ -18,4 +18,4 @@ materialRouter.delete("/", authenticate,authorize([userTypes.Instructor, userTyp
 
 
 
-module.exports = { courseRouter };
+module.exports = { materialRouter };
