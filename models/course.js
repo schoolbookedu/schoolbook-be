@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const { materialType } = require("../utils/materialType");
 const courseSchema = new Schema({
   title: {
     type: String,
@@ -19,11 +18,6 @@ const courseSchema = new Schema({
   },
   outlines: [
     {
-      title: { type: String },
-      userId: { type: Schema.Types.ObjectId},
-      materialTitle: { type: String },
-      thumbnail: { type: String },
-      materialType: { type: String, enum: materialType },
       materialId: {
         type: Schema.Types.ObjectId,
         ref: "Material",

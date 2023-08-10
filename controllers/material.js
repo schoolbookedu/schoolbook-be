@@ -65,7 +65,7 @@ const {
   exports.updateMaterial = async (req, res, next) => {
     try {
         await validationCheck(req, res);
-        updateDocument(req, res, Material, "Material details updated successfully");
+        updateDocument(req, res, Material, "Material details updated successfully"); //update requires all fields, one to look into
     
     } catch (error) {
       console.log(error);
@@ -81,13 +81,3 @@ const {
       next(error);
     }
   };
-
-
- 
-  
-  
-  
-  
-  
-  
-  
