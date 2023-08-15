@@ -463,7 +463,7 @@ exports.changePassword = async (req, res, next) => {
     const userId = req.user.id;
     const {oldPassword, newPassword, confirmPassword} = req.body;
      
-    const user = await User.findById({_id: userId});
+    const user = await User.findById(userId);
 
     if(!user) {
        return res.status(statusCodes[404]).json({
