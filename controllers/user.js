@@ -457,3 +457,50 @@ exports.resetPassword = async (req, res, next) => {
     });
   }
 };
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const {oldPassword, newPassword, confirmPassword} = req.body;
+     
+    const user = await User.findById({_id: userId});
+
+    if(!user) {
+       return res.status(statusCodes[404]).json({
+         statusCode: statusCodes[404],
+         responseText: responseText.FAIL,
+         errors: [{ msg: "User not found" }],
+       });
+    }
+
+     if (!(await decryptPassword(oldPassword, user.password))) {
+       return res.status(statusCodes[400]).send({
+         statusCode: statusCodes[400],
+         responseText: responseText.FAIL,
+         errors: [{ msg: `Invalid user credentials` }],
+       });
+     }
+
+     if (newPassword !== confirmPassword) {
+      return res.status(statusCodes[400]).send({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: `Passwords do not match` }],
+      });
+     }
+
+     let hashedPassword = await hashUserPassword(newPassword);
+
+      await User.findByIdAndUpdate(user._id, {
+        password: hashedPassword,
+      });
+
+      return res.status(statusCodes[200]).json({
+        statusCode: statusCodes[200],
+        responseText: responseText.SUCCESS,
+        data: 'Passwords updated successfully'
+      });
+  } catch (error) {
+    next(error);
+  }
+}

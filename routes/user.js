@@ -10,6 +10,7 @@ const {
   forgotPassword,
   resetPassword,
   uploadAvatar,
+  changePassword,
 } = require("../controllers/user");
 const { authenticate, authorize } = require("../middlewares/auth");
 const {
@@ -30,6 +31,7 @@ userRouter.get('/profile/verify', verifyUser)
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post('/reset-password', resetPassword);
 userRouter.patch('/:id/avatar', authenticate, upload.single("avatar"), uploadAvatar)
+userRouter.post('/change/password', authenticate, changePassword);
 
 
 module.exports = { userRouter };
