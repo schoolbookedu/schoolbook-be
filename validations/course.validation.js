@@ -3,6 +3,7 @@ const { materialType } = require("../utils/materialType");
 
 exports.CourseCreationValidation =  [
     body("title").trim().notEmpty().withMessage("title is required"),
+    body("courseCode").trim().notEmpty().withMessage("courseCode is required"),
     body("thumbnail").isString().withMessage("thumbnail must be a string").optional(),
     body("objectives").isString().withMessage("objectives must be a string").optional(),
 ]
