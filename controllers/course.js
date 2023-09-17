@@ -10,12 +10,12 @@ const { responseText, statusCodes } = require("../utils/response");
 const { removeFields } = require("../utils/handleExcludedFields");
 const { validationCheck } = require("../utils/validationCheck");
 const Course = require("../models/course");
-const {uploadFile}= require("../utils/imageProcessing")
+const { uploadFile } = require("../utils/imageProcessing")
 
-
+const populate = { required: true, field: "author", columns: "fullName email avatar gender" }
 exports.getAllCourse = async (req, res, next) => {
   try {
-    getAll(req, res, Course, CourseExcludedFields);
+    getAll(req, res, Course, CourseExcludedFields, populate);
   } catch (error) {
     console.log(error);
     next(error);
@@ -24,7 +24,7 @@ exports.getAllCourse = async (req, res, next) => {
 
 exports.getACourse = async (req, res, next) => {
   try {
-    getOne(req, res, Course, CourseExcludedFields);
+    getOne(req, res, Course, CourseExcludedFields, populate);
   } catch (error) {
     console.log(error);
     next(error);
@@ -36,11 +36,11 @@ exports.createCourse = async (req, res, next) => {
     await validationCheck(req, res);
 
     removeFields(CourseExcludedFields, req.body);
-    if(req.body.thumbnail){
-       const thumbnailURL = await uploadFile(req.body.thumbnail,"thumbnail","course_thumbnail")
-       req.body.thumbnail=thumbnailURL
+    if (req.body.thumbnail) {
+      const thumbnailURL = await uploadFile(req.body.thumbnail, "thumbnail", "course_thumbnail")
+      req.body.thumbnail = thumbnailURL
     }
-    req.body.tutor= req.user.id
+    req.body.tutor = req.user.id
     let created = await createDocument(req, res, Course);
 
     res.status(statusCodes[201]).json({
@@ -73,24 +73,24 @@ exports.deleteCourse = async (req, res, next) => {
   }
 };
 
-exports.createCourseMaterial = async(req,res, next)=>{
+exports.createCourseMaterial = async (req, res, next) => {
   try {
     await validationCheck(req, res);
 
     removeFields(CourseExcludedFields, req.body);
-    req.body.userId= req.user.id
+    req.body.userId = req.user.id
     const course = Course.findById(req.body.courseId);
-    if(!course){
+    if (!course) {
       return res.status(statusCodes[400]).json({
         statusCode: statusCodes[400],
         responseText: responseText.FAIL,
-        errors: [{ msg:  "Course not found" }],
+        errors: [{ msg: "Course not found" }],
       });
     }
 
     course.outlines.push(req.body)
     await course.save()
-  
+
     res.status(statusCodes[201]).json({
       statusCode: statusCodes[201],
       responseText: responseText.SUCCESS,

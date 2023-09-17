@@ -3,7 +3,7 @@ const { excludedQueryFields } = require("./excludedFields");
 const { responseText, statusCodes } = require("./response");
 const { generateAccessToken } = require("./token");
 
-exports.getAll = async (req, res, model, excludedFields = ["__v"]) => {
+exports.getAll = async (req, res, model, excludedFields = ["__v"], populate = { required: false }) => {
   try {
     let requestQueryObject = { ...req.query };
 
@@ -36,6 +36,15 @@ exports.getAll = async (req, res, model, excludedFields = ["__v"]) => {
       query = query.select("-__v ");
     }
 
+    //populate with realtionships
+    if (populate.required) {
+      if (populate.columns.length >= 1) {
+        query = query.populate(populate.field, populate.columns)
+      } else {
+        query = query.populate(populate.field)
+      }
+    }
+
     const page = req.query.page * 1 || 1;
     const pageSize = req.query.pageSize * 1 || 20;
     const skip = (page - 1) * pageSize;
@@ -65,11 +74,21 @@ exports.getAll = async (req, res, model, excludedFields = ["__v"]) => {
   }
 };
 
-exports.getOne = async (req, res, model, excludedFields = ["__v"]) => {
+exports.getOne = async (req, res, model, excludedFields = ["__v"], populate = { required: false }) => {
   try {
-    const resource = await model
+    let resource = model
       .findById(req.params.id)
       .select(excludedFields.length ? `-${excludedFields.join(" -")}` : []);
+
+
+    if (populate.required) {
+      if (populate.columns.length >= 1) {
+        resource = resource.populate(populate.field, populate.columns)
+      } else {
+        resource = resource.populate(populate.field)
+      }
+    }
+    resource = await resource;
     if (!resource) {
       return res.status(statusCodes[404]).json({
         statusCode: statusCodes[404],
@@ -112,7 +131,7 @@ exports.updateDocument = async (req, res, model, msg = "Successful") => {
       }
     );
 
-    if(updatedResoure.password) {
+    if (updatedResoure.password) {
       updatedResoure.password = "*****"
     }
 
@@ -183,21 +202,21 @@ exports.createDocument = async (
     }
     return { msg, resource, extra };
   } catch (error) {
-      let customError = {
-        statusCode: error.statusCode || statusCodes[500],
-        msg: error.message || "Something went wrong",
-      };
+    let customError = {
+      statusCode: error.statusCode || statusCodes[500],
+      msg: error.message || "Something went wrong",
+    };
 
     if (error.code && error.code === 11000) {
-       customError.msg = `Duplicate value entered for ${Object.keys(
-         error.keyValue
-       )}, please choose another value`;
-       customError.statusCode = statusCodes[400];
+      customError.msg = `Duplicate value entered for ${Object.keys(
+        error.keyValue
+      )}, please choose another value`;
+      customError.statusCode = statusCodes[400];
     }
-      return res.status(customError.statusCode).json({
-        statusCode: customError.statusCode,
-        responseText: responseText.FAIL,
-        errors: [{ msg: customError.msg }],
-      });
+    return res.status(customError.statusCode).json({
+      statusCode: customError.statusCode,
+      responseText: responseText.FAIL,
+      errors: [{ msg: customError.msg }],
+    });
   }
 };
