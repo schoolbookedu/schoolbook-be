@@ -12,7 +12,7 @@ const { validationCheck } = require("../utils/validationCheck");
 const Course = require("../models/course");
 const { uploadFile } = require("../utils/imageProcessing")
 
-const populate = { required: true, field: "author", columns: "fullName email avatar gender" }
+const populate = { required: true, field: "tutor", columns: "fullName email avatar gender" }
 exports.getAllCourse = async (req, res, next) => {
   try {
     getAll(req, res, Course, CourseExcludedFields, populate);
