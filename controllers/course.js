@@ -22,6 +22,17 @@ exports.getAllCourse = async (req, res, next) => {
   }
 };
 
+exports.getMyCourses = async (req, res, next) => {
+  try {
+    req.query.tutor = req.user.id
+    getAll(req, res, Course, CourseExcludedFields, populate);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+
 exports.getACourse = async (req, res, next) => {
   try {
     getOne(req, res, Course, CourseExcludedFields, populate);
