@@ -18,7 +18,7 @@ const courseRouter = express.Router();
 courseRouter.get("/", authenticate, getAllCourse);
 courseRouter.get("/:id", authenticate, getACourse);
 courseRouter.get("/tutor/my-courses", authenticate, getMyCourses);
-courseRouter.post("/enrol", authenticate, authorize([userTypes.Student]), enrollmentValidation, enrollToCourse);
+courseRouter.post("/enroll", authenticate, authorize([userTypes.Student]), enrollmentValidation, enrollToCourse);
 courseRouter.post("/", authenticate, authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]), CourseCreationValidation, createCourse);
 courseRouter.post("/course-materials", authenticate, authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]), CourseMaterialValidation, createCourseMaterial);
 courseRouter.patch("/:id", CourseUpdateValidation, updateCourse);
