@@ -10,6 +10,7 @@ const { responseText, statusCodes } = require("../utils/response");
 const { removeFields } = require("../utils/handleExcludedFields");
 const { validationCheck } = require("../utils/validationCheck");
 const Course = require("../models/course");
+const User = require("../models/user")
 const { uploadFile } = require("../utils/imageProcessing")
 
 const populate = { required: true, field: "tutor", columns: "fullName email avatar gender" }
@@ -65,6 +66,36 @@ exports.createCourse = async (req, res, next) => {
   }
 };
 
+exports.enrollToCourse = async (req, res, next) => {
+  try {
+    const userId = req.user.id
+    const { courseId } = req.body
+    const user = await User.findById(userId)
+    const course = await Course.findById(courseId)
+    if (!course) {
+      return res.status(statusCodes[404]).json({
+        statusCode: statusCodes[404],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "Invalid course Id" }],
+      });
+    }
+    user.myCourses = user.myCourses.unshift(courseId);
+    await user.save()
+    course.enrollee = course.enrollee.unshift(userId)
+    course.enrollmentCount = course.enrollmentCount + 1;
+    await course.save()
+    res.status(statusCodes[201]).json({
+      statusCode: statusCodes[201],
+      responseText: responseText.SUCCESS,
+      data: created,
+    });
+
+  } catch (error) {
+    console.log(error);
+    next(error);
+
+  }
+}
 exports.updateCourse = async (req, res, next) => {
   try {
     await validationCheck(req, res);

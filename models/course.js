@@ -8,7 +8,7 @@ const courseSchema = new Schema({
     type: String,
     required: true,
   },
-
+  enrollee: [String],
   thumbnail: {
     type: String,
   },
