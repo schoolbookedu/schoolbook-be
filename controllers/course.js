@@ -84,10 +84,13 @@ exports.enrollToCourse = async (req, res, next) => {
     course.enrollee = course.enrollee.unshift(userId)
     course.enrollmentCount = course.enrollmentCount + 1;
     await course.save()
+    const enrolledCourse = { ...course }
+    delete enrolledCourse.enrollee
+    delete enrolledCourse.enrollmentCount
     res.status(statusCodes[201]).json({
       statusCode: statusCodes[201],
       responseText: responseText.SUCCESS,
-      data: created,
+      data: { msg: "Enrollment successful", resource: enrolledCourse, extra: {} },
     });
 
   } catch (error) {
