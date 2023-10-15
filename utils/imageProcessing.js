@@ -22,8 +22,8 @@ const multerStorage = multer.memoryStorage({
 
 const filterFileType = (req, file, cb) => {
   const allowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif",];
-  const allowedVideoExtensions = ["flv","mov","mkv","mp4","webm","mpd","ogv"]
-  const allowedDocumentExtensions = ["pdf","docx","txt","rtf","doc"]
+  const allowedVideoExtensions = [".flv",".mov",".mkv",".mp4",".webm",".mpd",".ogv"]
+  const allowedDocumentExtensions = [".pdf",".docx",".txt",".rtf",".doc"]
 
   const allowedExtensions=[...allowedImageExtensions,...allowedVideoExtensions,...allowedDocumentExtensions];
 
