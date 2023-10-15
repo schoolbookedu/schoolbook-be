@@ -7,7 +7,7 @@ const {
   } = require("../utils/crudOperations");
   
   const { responseText, statusCodes } = require("../utils/response");
-  const {cloudinary, upload, uploadFile}= require("../utils/imageProcessing")
+  const {uploadFile}= require("../utils/imageProcessing")
   const { removeFields } = require("../utils/handleExcludedFields");
   const { validationCheck } = require("../utils/validationCheck");
   const Material = require("../models/material");
