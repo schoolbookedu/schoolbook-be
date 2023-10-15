@@ -18,7 +18,7 @@ const {
         await validationCheck(req, res);
         req.body.userId= req.user.id
 
-        const  mediaURLuploaded = await uploadFile(req.body.mediaURL,"mediaURL","course-material");
+        const  mediaURLuploaded = await uploadFile(req,"mediaURL","course-material");
         req.body.mediaURL = mediaURLuploaded;
 
         let created = await createDocument(req, res, Material);

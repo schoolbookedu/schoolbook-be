@@ -13,11 +13,7 @@ cloudinary.config({
 
 const multerStorage = multer.memoryStorage({
   destination: function (req, file, cb) {
-    // if (file.mimetype.startsWith("image")) {
-    //   cb(null, "public/img/school-book-images/");
-    // } else {
-    //   cb(new Error("Not an image"), false);
-    // }
+   cb(null, "public/media/"); 
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -27,8 +23,9 @@ const multerStorage = multer.memoryStorage({
 const filterFileType = (req, file, cb) => {
   const allowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif",];
   const allowedVideoExtensions = ["flv","mov","mkv","mp4","webm","mpd","ogv"]
+  const allowedDocumentExtensions = ["pdf","docx","txt","rtf","doc"]
 
-  const allowedExtensions=[...allowedImageExtensions,...allowedVideoExtensions];
+  const allowedExtensions=[...allowedImageExtensions,...allowedVideoExtensions,...allowedDocumentExtensions];
 
   const fileExtension = path.extname(file.originalname).toLowerCase();
 
@@ -41,36 +38,43 @@ const filterFileType = (req, file, cb) => {
 exports.upload = multer({ storage: multerStorage, fileFilter: filterFileType });
 exports.cloudinary = cloudinary;
 
-exports.uploadFile = async (img, field, folder) => {
+exports.uploadFile = async (req, field, folder) => {
   let imageURL = "";
 
-  // const tempDirectory = path.join(__dirname, "../tmp");
-  // const tempFilePath = path.join(tempDirectory, `${field}-${Date.now()}`);
+  if(req.file){
 
-  // // Create the 'tmp' directory if it doesn't exist
-  // if (!fs.existsSync(tempDirectory)) {
-  //   fs.mkdirSync(tempDirectory);
-  // }
-
-  // // Save the file from the buffer to the temporary location
-  // await writeFileAsync(tempFilePath, file.buffer);
-
-  await cloudinary.uploader.upload(
-    img,
-    {
-      public_id: `${folder}/${field}-${Date.now()}`, resource_type:"auto"
-    },
-    (error, result) => {
-      if (error) {
-        console.log(`Error uploading ${field} to cloudinary`);
-      } else {
-        imageURL = result.secure_url;
+    await cloudinary.uploader.upload(
+      req.file.path,
+      {
+        public_id: `${folder}/${field}-${Date.now()}`,
+      },
+      (error, result) => {
+        if (error) {
+          console.log(`Error uploading ${field} to cloudinary`);
+        } else {
+          imageURL = result.secure_url;
+        }
       }
-    }
-  );
+    );
 
-  // Delete the temporary file
-  //fs.unlinkSync(tempFilePath);
+
+  }else if(req.body.imageURL){
+
+    await cloudinary.uploader.upload(
+      req.body.imageURL,
+      {
+        public_id: `${folder}/${field}-${Date.now()}`,
+      },
+      (error, result) => {
+        if (error) {
+          console.log(`Error uploading ${field} to cloudinary`);
+        } else {
+          imageURL = result.secure_url;
+        }
+      }
+    );
+
+  }
 
   return imageURL;
 };
