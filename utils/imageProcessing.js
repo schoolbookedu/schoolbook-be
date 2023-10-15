@@ -39,7 +39,7 @@ exports.upload = multer({ storage: multerStorage, fileFilter: filterFileType });
 exports.cloudinary = cloudinary;
 
 exports.uploadFile = async (req, field, folder) => {
-  let imageURL = "";
+  let mediaURL = "";
 
   if(req.file){
 
@@ -52,16 +52,16 @@ exports.uploadFile = async (req, field, folder) => {
         if (error) {
           console.log(`Error uploading ${field} to cloudinary`);
         } else {
-          imageURL = result.secure_url;
+          mediaURL  = result.secure_url;
         }
       }
     );
 
 
-  }else if(req.body.imageURL){
+  }else if(req.body[field]){
 
     await cloudinary.uploader.upload(
-      req.body.imageURL,
+      req.body[field],
       {
         public_id: `${folder}/${field}-${Date.now()}`,
       },
@@ -69,12 +69,12 @@ exports.uploadFile = async (req, field, folder) => {
         if (error) {
           console.log(`Error uploading ${field} to cloudinary`);
         } else {
-          imageURL = result.secure_url;
+          mediaURL = result.secure_url;
         }
       }
     );
 
   }
 
-  return imageURL;
+  return mediaURL ;
 };
