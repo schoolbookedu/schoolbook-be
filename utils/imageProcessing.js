@@ -1,9 +1,7 @@
-const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const path = require("path");
 const cloudinary = require("cloudinary").v2;
-const { promisify } = require("util");
-const writeFileAsync = promisify(fs.writeFile);
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -13,7 +11,7 @@ cloudinary.config({
 
 const multerStorage = multer.memoryStorage({
   destination: function (req, file, cb) {
-   cb(null, "public/media/"); 
+    cb(null, "public/media/");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -21,18 +19,33 @@ const multerStorage = multer.memoryStorage({
 });
 
 const filterFileType = (req, file, cb) => {
-  const allowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif",];
-  const allowedVideoExtensions = [".flv",".mov",".mkv",".mp4",".webm",".mpd",".ogv"]
-  const allowedDocumentExtensions = [".pdf",".docx",".txt",".rtf",".doc"]
+  const allowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif"];
+  const allowedVideoExtensions = [
+    ".flv",
+    ".mov",
+    ".mkv",
+    ".mp4",
+    ".webm",
+    ".mpd",
+    ".ogv",
+  ];
+  const allowedDocumentExtensions = [".pdf", ".docx", ".txt", ".rtf", ".doc"];
 
-  const allowedExtensions=[...allowedImageExtensions,...allowedVideoExtensions,...allowedDocumentExtensions];
+  const allowedExtensions = [
+    ...allowedImageExtensions,
+    ...allowedVideoExtensions,
+    ...allowedDocumentExtensions,
+  ];
 
   const fileExtension = path.extname(file.originalname).toLowerCase();
 
   if (allowedExtensions.includes(fileExtension)) {
     cb(null, true);
   } else {
-    cb(new Error(`Only ${allowedExtensions.join(",")} extensions are allowed`), false);
+    cb(
+      new Error(`Only ${allowedExtensions.join(",")} extensions are allowed`),
+      false
+    );
   }
 };
 exports.upload = multer({ storage: multerStorage, fileFilter: filterFileType });
@@ -41,29 +54,13 @@ exports.cloudinary = cloudinary;
 exports.uploadFile = async (req, field, folder) => {
   let mediaURL = "";
 
-  if(req.file){
-
+  if (req.file) {
+    const uniqueFilename = `${uuidv4()}`; // Generate a unique filename using UUID
+    const publicId = `${folder}/${field}-${uniqueFilename}`;
     await cloudinary.uploader.upload(
       req.file.path,
       {
-        public_id: `${folder}/${field}-${Date.now()}`,
-      },
-      (error, result) => {
-        if (error) {
-          console.log(`Error uploading ${field} to cloudinary`);
-        } else {
-          mediaURL  = result.secure_url;
-        }
-      }
-    );
-
-
-  }else if(req.body[field]){
-
-    await cloudinary.uploader.upload(
-      req.body[field],
-      {
-        public_id: `${folder}/${field}-${Date.now()}`,
+        public_id: publicId,
       },
       (error, result) => {
         if (error) {
@@ -73,8 +70,23 @@ exports.uploadFile = async (req, field, folder) => {
         }
       }
     );
-
+  } else if (req.body[field]) {
+    const uniqueFilename = `${uuidv4()}`; // Generate a unique filename using UUID
+    const publicId = `${folder}/${field}-${uniqueFilename}`;
+    await cloudinary.uploader.upload(
+      req.body[field],
+      {
+        public_id: publicId,
+      },
+      (error, result) => {
+        if (error) {
+          console.log(`Error uploading ${field} to cloudinary`);
+        } else {
+          mediaURL = result.secure_url;
+        }
+      }
+    );
   }
 
-  return mediaURL ;
+  return mediaURL;
 };
