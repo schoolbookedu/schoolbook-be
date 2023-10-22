@@ -34,9 +34,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.use(express.json({ limit: "1000mb" })); //middleware for body-paser
-app.use(bodyParser.urlencoded({ extended: true, limit: "1000mb" }));
-app.use(bodyParser.json({ limit: "1000mb" }));
+app.use(express.json({ limit: "900mb" })); //middleware for body-paser
+app.use(bodyParser.urlencoded({ extended: true, limit: "900mb" }));
+app.use(bodyParser.json({ limit: "900mb" }));
 app.use(cors()); //middle ware to allow cross origin resource sharing
 
 //protect DB from NOSQL query injections using the express-mongo-sanitize middleware
