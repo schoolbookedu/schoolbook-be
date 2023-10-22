@@ -10,8 +10,7 @@ const hpp = require("hpp");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
-const ejs = require('ejs')
-
+const ejs = require("ejs");
 
 //user defined modules
 
@@ -20,7 +19,7 @@ const { undefinedrouter } = require("./routes/undefinedroute");
 const { universityRouter } = require("./routes/university");
 const { departmentRouter } = require("./routes/department");
 const { courseRouter } = require("./routes/course");
-const {materialRouter}= require("./routes/material");
+const { materialRouter } = require("./routes/material");
 
 // db controller
 const connectToDB = require("./utils/dbcon");
@@ -35,9 +34,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.use(express.json({ limit: "100mb" })); //middleware for body-paser
-app.use(bodyParser.urlencoded({ extended: true, limit: "100mb" }));
-app.use(bodyParser.json({ limit: "100mb" }));
+app.use(express.json({ limit: "1000mb" })); //middleware for body-paser
+app.use(bodyParser.urlencoded({ extended: true, limit: "1000mb" }));
+app.use(bodyParser.json({ limit: "1000mb" }));
 app.use(cors()); //middle ware to allow cross origin resource sharing
 
 //protect DB from NOSQL query injections using the express-mongo-sanitize middleware
@@ -77,9 +76,9 @@ app.get("/", (req, res) => {
     statusText: "Success",
   });
 
-//   const renderTemplate = ejs.render(template);
+  //   const renderTemplate = ejs.render(template);
 
-// res.send(renderTemplate)
+  // res.send(renderTemplate)
 });
 
 app.use("/api/v1/users", userRouter); //users route
