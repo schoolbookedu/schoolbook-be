@@ -62,6 +62,7 @@ exports.uploadFile = async (req, field, folder) => {
       req.file.path,
       {
         public_id: publicId,
+        resource_type: "auto",
       },
       (error, result) => {
         if (error) {
@@ -78,6 +79,7 @@ exports.uploadFile = async (req, field, folder) => {
       req.body[field],
       {
         public_id: publicId,
+        resource_type: "auto",
       },
       (error, result) => {
         if (error) {
