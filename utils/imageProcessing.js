@@ -58,9 +58,8 @@ exports.uploadFile = async (req, field, folder) => {
   if (req.file) {
     const uniqueFilename = `${uuidv4()}`; // Generate a unique filename using UUID
     const publicId = `${folder}/${field}-${uniqueFilename}`;
-    const stream = streamifier.createReadStream(req.file.buffer);
     await cloudinary.uploader.upload(
-      stream,
+      req.file.path,
       {
         public_id: publicId,
       },
