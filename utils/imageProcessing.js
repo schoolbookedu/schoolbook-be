@@ -49,7 +49,11 @@ const filterFileType = (req, file, cb) => {
     );
   }
 };
-exports.upload = multer({ storage: multerStorage, fileFilter: filterFileType });
+exports.upload = multer({
+  storage: multerStorage,
+  fileFilter: filterFileType,
+  limits: { fieldSize: 1024 * 1024 * 1024 * 1024 * 1024 * 1024 },
+});
 exports.cloudinary = cloudinary;
 
 exports.uploadFile = async (req, field, folder) => {
