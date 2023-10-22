@@ -80,6 +80,7 @@ exports.uploadFile = async (req, field, folder) => {
       },
       (error, result) => {
         if (error) {
+          console.log(JSON.stringify(error));
           console.log(`Error uploading ${field} to cloudinary`);
         } else {
           mediaURL = result.secure_url;
