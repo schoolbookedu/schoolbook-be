@@ -17,16 +17,13 @@ exports.createMaterial = async (req, res, next) => {
     await validationCheck(req, res);
     req.body.userId = req.user.id;
 
-    console.log("req.body", req.body);
-    console.log("req.file", req.file);
-
     const mediaURLuploaded = await uploadFile(
       req,
       "mediaURL",
       "course-material"
     );
     req.body.mediaURL = mediaURLuploaded;
-    console.log("req.body after upload", req.body);
+
     let created = await createDocument(req, res, Material);
     res.status(statusCodes[201]).json({
       statusCode: statusCodes[201],
@@ -34,7 +31,7 @@ exports.createMaterial = async (req, res, next) => {
       data: created,
     });
   } catch (error) {
-    console.log(error);
+    console.log(JSON.stringify(error));
     next(error);
   }
 };
