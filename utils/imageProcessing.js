@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
+const streamifier = require("streamifier");
 const multer = require("multer");
 const path = require("path");
 const cloudinary = require("cloudinary").v2;
@@ -57,8 +58,9 @@ exports.uploadFile = async (req, field, folder) => {
   if (req.file) {
     const uniqueFilename = `${uuidv4()}`; // Generate a unique filename using UUID
     const publicId = `${folder}/${field}-${uniqueFilename}`;
+    const stream = streamifier.createReadStream(req.file.buffer);
     await cloudinary.uploader.upload(
-      req.file.buffer,
+      stream,
       {
         public_id: publicId,
       },
