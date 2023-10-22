@@ -31,6 +31,7 @@ materialRouter.get(
 materialRouter.get("/:id", authenticate, getAMaterial);
 materialRouter.post(
   "/",
+  upload.single("mediaURL"),
   authenticate,
   authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]),
   MaterialCreationValidation,
