@@ -36,7 +36,7 @@ const userSchema = new Schema({
     ref: "Department",
     required: true,
   },
-  myCourses: [String],
+  myCourses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
   phoneNumber: {
     type: String,
     index: true,
@@ -70,14 +70,13 @@ const userSchema = new Schema({
   },
   passwordResetTokenExpires: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   verificationToken: {
     type: String,
     default: "",
   },
 });
-
 
 const User = model("User", userSchema);
 module.exports = User;

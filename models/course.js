@@ -8,7 +8,7 @@ const courseSchema = new Schema({
     type: String,
     required: true,
   },
-  enrollee: [String],
+  enrollee: [{ type: Schema.Types.ObjectId, ref: "User" }],
   thumbnail: {
     type: String,
   },
