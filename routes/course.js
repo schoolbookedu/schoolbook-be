@@ -6,7 +6,7 @@ const {
   updateCourse,
   deleteCourse,
   createCourseMaterial,
-  getMyCourses,
+  getTutorCourses,
   enrollToCourse,
   getStudentCourse,
 } = require("../controllers/course");
@@ -23,7 +23,7 @@ const courseRouter = express.Router();
 
 courseRouter.get("/", authenticate, getAllCourse);
 courseRouter.get("/:id", authenticate, getACourse);
-courseRouter.get("/tutor/my-courses", authenticate, getMyCourses);
+courseRouter.get("/tutor/my-courses", authenticate, getTutorCourses);
 courseRouter.get(
   "/student/my-courses",
   authenticate,

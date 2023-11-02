@@ -27,7 +27,7 @@ exports.getAllCourse = async (req, res, next) => {
   }
 };
 
-exports.getMyCourses = async (req, res, next) => {
+exports.getTutorCourses = async (req, res, next) => {
   try {
     req.query.tutor = req.user.id;
     getAll(req, res, Course, CourseExcludedFields, populate);
