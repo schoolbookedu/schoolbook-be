@@ -2,7 +2,7 @@ const { body, param, header } = require("express-validator");
 
 exports.DepartmentCreationValidation = [
   body("name").trim().notEmpty().withMessage("Name is required"),
-  body("faculty").optional({checkFalsy: true}),
+  body("faculty").optional({ checkFalsy: true }),
 ];
 
 exports.DepartmentUpdateValidation = [

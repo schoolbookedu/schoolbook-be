@@ -73,4 +73,8 @@ async function consumeFromRabbitMQ() {
   }
 }
 
-module.exports = { sendMailWithSendgrid, publishToRabbitMQ, consumeFromRabbitMQ };
+module.exports = {
+  sendMailWithSendgrid,
+  publishToRabbitMQ,
+  consumeFromRabbitMQ,
+};

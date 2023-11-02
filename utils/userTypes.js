@@ -1,6 +1,6 @@
 exports.userTypes = {
-    Student: "Student",
-    Instructor: "Instructor",
-    Admin: "Admin",
-    Developer: "Developer",
-  };
+  Student: "Student",
+  Instructor: "Instructor",
+  Admin: "Admin",
+  Developer: "Developer",
+};

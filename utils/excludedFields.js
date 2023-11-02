@@ -2,7 +2,7 @@ exports.UserCreateExcludedFields = [
   "passwordResetToken",
   "passwordResetTokenExpires",
   "isVerified",
-  "verificationToken"
+  "verificationToken",
 ];
 
 exports.UserExcludedFields = [];
@@ -17,10 +17,10 @@ exports.UserUpdateExcludedFields = ["password", "userType"];
 
 exports.excludedQueryFields = ["sort", "page", "pageSize", "fields"];
 
-exports.UniversityExcludedFields = []
+exports.UniversityExcludedFields = [];
 
-exports.CourseExcludedFields = []
+exports.CourseExcludedFields = [];
 
-exports.MaterialExcludedFields = []
+exports.MaterialExcludedFields = [];
 
-exports.DepartmentExcludedFields = []
+exports.DepartmentExcludedFields = [];

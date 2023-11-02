@@ -53,7 +53,12 @@ exports.createDepartment = async (req, res, next) => {
 exports.updateDepartment = async (req, res, next) => {
   try {
     await validationCheck(req, res);
-    updateDocument(req, res, Department, "Department details updated successfully");
+    updateDocument(
+      req,
+      res,
+      Department,
+      "Department details updated successfully"
+    );
   } catch (error) {
     console.log(error);
     next(error);

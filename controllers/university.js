@@ -11,20 +11,20 @@ const { UniversityExcludedFields } = require("../utils/excludedFields");
 const { validationCheck } = require("../utils/validationCheck");
 const { responseText, statusCodes } = require("../utils/response");
 const { removeFields } = require("../utils/handleExcludedFields");
-const University = require("../models/university")
+const University = require("../models/university");
 
 exports.getAllUniversity = async (req, res, next) => {
-    try {
-        getAll(req, res, University, UniversityExcludedFields);
-    } catch (error) {
-        console.log(error)
-        next(error)
-    }
-}
+  try {
+    getAll(req, res, University, UniversityExcludedFields);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 
 exports.getAUniversity = async (req, res, next) => {
   try {
-    getOne(req,res,University, UniversityExcludedFields)
+    getOne(req, res, University, UniversityExcludedFields);
   } catch (error) {
     console.log(error);
     next(error);
@@ -35,15 +35,15 @@ exports.createUniversity = async (req, res, next) => {
   try {
     await validationCheck(req, res);
 
-    removeFields(UniversityExcludedFields, req.body)
+    removeFields(UniversityExcludedFields, req.body);
 
-    let created = await createDocument(req,res,University)
+    let created = await createDocument(req, res, University);
 
-     res.status(statusCodes[201]).json({
-       statusCode: statusCodes[201],
-       responseText: responseText.SUCCESS,
-       data: created,
-     });
+    res.status(statusCodes[201]).json({
+      statusCode: statusCodes[201],
+      responseText: responseText.SUCCESS,
+      data: created,
+    });
   } catch (error) {
     console.log(error);
     next(error);
@@ -52,8 +52,13 @@ exports.createUniversity = async (req, res, next) => {
 
 exports.updateUniversity = async (req, res, next) => {
   try {
-     await validationCheck(req, res);
-     updateDocument(req, res, University, "University details updated successfully");
+    await validationCheck(req, res);
+    updateDocument(
+      req,
+      res,
+      University,
+      "University details updated successfully"
+    );
   } catch (error) {
     console.log(error);
     next(error);
@@ -61,10 +66,10 @@ exports.updateUniversity = async (req, res, next) => {
 };
 
 exports.deleteUniversity = async (req, res, next) => {
-    try {
-         deleteDocument(req, res, University);
-    } catch (error) {
-        console.log(error)
-        next(error)
-    }
-}
+  try {
+    deleteDocument(req, res, University);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

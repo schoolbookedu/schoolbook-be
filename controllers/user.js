@@ -42,7 +42,7 @@ exports.getAllUser = async (req, res) => {
     getAll(req, res, User, UserGetExcludedFields);
   } catch (error) {
     console.log(error);
-      return res.status(statusCodes[500]).json({
+    return res.status(statusCodes[500]).json({
       statusCode: statusCodes[500],
       responseText: responseText.FAIL,
       errors: [
@@ -52,14 +52,14 @@ exports.getAllUser = async (req, res) => {
       ],
     });
   }
-  }
+};
 
 exports.getAUser = async (req, res) => {
   try {
     getOne(req, res, User, UserGetExcludedFields);
   } catch (error) {
     console.log(error);
-      return res.status(statusCodes[500]).json({
+    return res.status(statusCodes[500]).json({
       statusCode: statusCodes[500],
       responseText: responseText.FAIL,
       errors: [
@@ -69,7 +69,7 @@ exports.getAUser = async (req, res) => {
       ],
     });
   }
-  }
+};
 
 exports.createUser = async (req, res) => {
   try {
@@ -154,7 +154,7 @@ exports.updateUser = async (req, res) => {
     updateDocument(req, res, User, "User updated successfully");
   } catch (error) {
     console.log(error);
-      return res.status(statusCodes[500]).json({
+    return res.status(statusCodes[500]).json({
       statusCode: statusCodes[500],
       responseText: responseText.FAIL,
       errors: [
@@ -164,33 +164,29 @@ exports.updateUser = async (req, res) => {
       ],
     });
   }
-  }
+};
 
 exports.uploadAvatar = async (req, res) => {
   try {
-    const userId = req.params.id
+    const userId = req.params.id;
     const file = req.file;
     await validationCheck(req, res);
 
-     if (!file) {
-        return res.status(statusCodes[400]).json({
-          statusCode: statusCodes[400],
-          responseText: responseText.FAIL,
-          errors: [{ msg: `No file uploaded` }],
-        });
-     }
+    if (!file) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: `No file uploaded` }],
+      });
+    }
 
-    let imageUrl = await uploadFile(
-      file,
-      "avatar",
-      "SchoolBook-Avatar"
-    );
+    let imageUrl = await uploadFile(file, "avatar", "SchoolBook-Avatar");
     req.body.avatar = imageUrl;
     // await logs(req, "Upload user Avatar", "Upload user avatar");
     updateDocument(req, res, User, "Avater upload successful");
   } catch (error) {
     console.log(error);
-      return res.status(statusCodes[500]).json({
+    return res.status(statusCodes[500]).json({
       statusCode: statusCodes[500],
       responseText: responseText.FAIL,
       errors: [
@@ -200,7 +196,7 @@ exports.uploadAvatar = async (req, res) => {
       ],
     });
   }
-  }
+};
 
 exports.deleteUser = async (req, res) => {
   try {
@@ -426,24 +422,24 @@ exports.resetPassword = async (req, res, next) => {
     );
 
     const mailOptions = {
-        to: validResetToken.email, // Change to your recipient
-        from: process.env.SENDER_EMAIL, // Change to your verified sender
-        subject: "Password Reset Successful",
-        text: `You have successfully reset the password on your account. Please contact support if this wasn't done by you.`,
-      };
+      to: validResetToken.email, // Change to your recipient
+      from: process.env.SENDER_EMAIL, // Change to your verified sender
+      subject: "Password Reset Successful",
+      text: `You have successfully reset the password on your account. Please contact support if this wasn't done by you.`,
+    };
 
-      //send email
-      await sendMailWithSendgrid(mailOptions);
-    
-       return res.status(statusCodes[200]).send({
-         statusCode: statusCodes[200],
-         responseText: responseText.SUCCESS,
-         data: {
-           msg: `Password reset was successful`,
-           resource: {},
-           extra: {},
-         },
-       });
+    //send email
+    await sendMailWithSendgrid(mailOptions);
+
+    return res.status(statusCodes[200]).send({
+      statusCode: statusCodes[200],
+      responseText: responseText.SUCCESS,
+      data: {
+        msg: `Password reset was successful`,
+        resource: {},
+        extra: {},
+      },
+    });
   } catch (error) {
     console.log(error);
     return res.status(statusCodes[500]).json({
@@ -461,46 +457,46 @@ exports.resetPassword = async (req, res, next) => {
 exports.changePassword = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const {oldPassword, newPassword, confirmPassword} = req.body;
-     
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
     const user = await User.findById(userId);
 
-    if(!user) {
-       return res.status(statusCodes[404]).json({
-         statusCode: statusCodes[404],
-         responseText: responseText.FAIL,
-         errors: [{ msg: "User not found" }],
-       });
+    if (!user) {
+      return res.status(statusCodes[404]).json({
+        statusCode: statusCodes[404],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "User not found" }],
+      });
     }
 
-     if (!(await decryptPassword(oldPassword, user.password))) {
-       return res.status(statusCodes[400]).send({
-         statusCode: statusCodes[400],
-         responseText: responseText.FAIL,
-         errors: [{ msg: `Invalid user credentials` }],
-       });
-     }
+    if (!(await decryptPassword(oldPassword, user.password))) {
+      return res.status(statusCodes[400]).send({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: `Invalid user credentials` }],
+      });
+    }
 
-     if (newPassword !== confirmPassword) {
+    if (newPassword !== confirmPassword) {
       return res.status(statusCodes[400]).send({
         statusCode: statusCodes[400],
         responseText: responseText.FAIL,
         errors: [{ msg: `Passwords do not match` }],
       });
-     }
+    }
 
-     let hashedPassword = await hashUserPassword(newPassword);
+    let hashedPassword = await hashUserPassword(newPassword);
 
-      await User.findByIdAndUpdate(user._id, {
-        password: hashedPassword,
-      });
+    await User.findByIdAndUpdate(user._id, {
+      password: hashedPassword,
+    });
 
-      return res.status(statusCodes[200]).json({
-        statusCode: statusCodes[200],
-        responseText: responseText.SUCCESS,
-        data: 'Passwords updated successfully'
-      });
+    return res.status(statusCodes[200]).json({
+      statusCode: statusCodes[200],
+      responseText: responseText.SUCCESS,
+      data: "Passwords updated successfully",
+    });
   } catch (error) {
     next(error);
   }
-}
+};

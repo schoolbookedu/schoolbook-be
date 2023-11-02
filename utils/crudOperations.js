@@ -3,7 +3,13 @@ const { excludedQueryFields } = require("./excludedFields");
 const { responseText, statusCodes } = require("./response");
 const { generateAccessToken } = require("./token");
 
-exports.getAll = async (req, res, model, excludedFields = ["__v"], populate = { required: false }) => {
+exports.getAll = async (
+  req,
+  res,
+  model,
+  excludedFields = ["__v"],
+  populate = { required: false }
+) => {
   try {
     let requestQueryObject = { ...req.query };
 
@@ -39,9 +45,9 @@ exports.getAll = async (req, res, model, excludedFields = ["__v"], populate = { 
     //populate with realtionships
     if (populate.required) {
       if (populate.columns.length >= 1) {
-        query = query.populate(populate.field, populate.columns)
+        query = query.populate(populate.field, populate.columns);
       } else {
-        query = query.populate(populate.field)
+        query = query.populate(populate.field);
       }
     }
 
@@ -74,18 +80,23 @@ exports.getAll = async (req, res, model, excludedFields = ["__v"], populate = { 
   }
 };
 
-exports.getOne = async (req, res, model, excludedFields = ["__v"], populate = { required: false }) => {
+exports.getOne = async (
+  req,
+  res,
+  model,
+  excludedFields = ["__v"],
+  populate = { required: false }
+) => {
   try {
     let resource = model
       .findById(req.params.id)
       .select(excludedFields.length ? `-${excludedFields.join(" -")}` : []);
 
-
     if (populate.required) {
       if (populate.columns.length >= 1) {
-        resource = resource.populate(populate.field, populate.columns)
+        resource = resource.populate(populate.field, populate.columns);
       } else {
-        resource = resource.populate(populate.field)
+        resource = resource.populate(populate.field);
       }
     }
     resource = await resource;
@@ -132,7 +143,7 @@ exports.updateDocument = async (req, res, model, msg = "Successful") => {
     );
 
     if (updatedResoure.password) {
-      updatedResoure.password = "*****"
+      updatedResoure.password = "*****";
     }
 
     return res.status(statusCodes[200]).json({

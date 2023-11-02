@@ -9,4 +9,4 @@ exports.UniversityCreationValidation = [
   body("contactEmail").trim().isEmail().optional({ checkFalsy: true }),
 ];
 
-exports.UniversityUpdateValidation = []
+exports.UniversityUpdateValidation = [];
