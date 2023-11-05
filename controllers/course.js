@@ -102,7 +102,7 @@ exports.enrollToCourse = async (req, res, next) => {
     const userId = req.user.id;
     const { courseId } = req.body;
     const user = await User.findById(userId);
-    const course = await Course.findById(new ObjectId(courseId));
+    const course = await Course.findById(courseId);
     if (!course) {
       return res.status(statusCodes[404]).json({
         statusCode: statusCodes[404],
@@ -111,7 +111,7 @@ exports.enrollToCourse = async (req, res, next) => {
       });
     }
     console.log("########### GOT here");
-    user.myCourses = user.myCourses.unshift(new ObjectId(courseId));
+    user.myCourses = user.myCourses.unshift(courseId);
     await user.save();
     course.enrollee = course.enrollee.unshift(userId);
     course.enrollmentCount = course.enrollmentCount + 1;

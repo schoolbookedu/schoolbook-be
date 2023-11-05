@@ -36,7 +36,7 @@ const userSchema = new Schema({
     ref: "Department",
     required: true,
   },
-  myCourses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+  myCourses: [String],
   phoneNumber: {
     type: String,
     index: true,
