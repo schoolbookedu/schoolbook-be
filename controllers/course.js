@@ -1,3 +1,4 @@
+const { Schema } = require("mongoose");
 const {
   getOne,
   getAll,
@@ -12,6 +13,9 @@ const { validationCheck } = require("../utils/validationCheck");
 const Course = require("../models/course");
 const User = require("../models/user");
 const { uploadFile } = require("../utils/imageProcessing");
+
+const { Types } = Schema;
+const { ObjectId } = Types;
 
 const populate = {
   required: true,
@@ -98,7 +102,7 @@ exports.enrollToCourse = async (req, res, next) => {
     const userId = req.user.id;
     const { courseId } = req.body;
     const user = await User.findById(userId);
-    const course = await Course.findById(courseId);
+    const course = await Course.findById(new ObjectId(courseId));
     if (!course) {
       return res.status(statusCodes[404]).json({
         statusCode: statusCodes[404],
@@ -106,7 +110,8 @@ exports.enrollToCourse = async (req, res, next) => {
         errors: [{ msg: "Invalid course Id" }],
       });
     }
-    user.myCourses = user.myCourses.unshift(courseId);
+    console.log("########### GOT here");
+    user.myCourses = user.myCourses.unshift(new ObjectId(courseId));
     await user.save();
     course.enrollee = course.enrollee.unshift(userId);
     course.enrollmentCount = course.enrollmentCount + 1;
