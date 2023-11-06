@@ -64,7 +64,6 @@ exports.getAll = async (
     }
 
     const result = await query;
-
     res.status(statusCodes[200]).json({
       statusCode: statusCodes[200],
       responseText: responseText.SUCCESS,

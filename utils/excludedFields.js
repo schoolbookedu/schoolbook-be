@@ -11,6 +11,7 @@ exports.UserGetExcludedFields = [
   "passwordResetToken",
   "passwordResetTokenExpires",
   "password",
+  "verificationToken",
 ];
 
 exports.UserUpdateExcludedFields = ["password", "userType"];

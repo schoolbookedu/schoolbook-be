@@ -18,10 +18,16 @@ const {
   UserUpdateValidation,
 } = require("../validations/user.validation");
 const { upload } = require("../utils/imageProcessing");
+const { userTypes } = require("../utils/userTypes");
 
 const userRouter = express.Router();
 
-userRouter.get("/", authenticate, authorize, getAllUser);
+userRouter.get(
+  "/",
+  authenticate,
+  authorize([userTypes.Admin, userTypes.Developer]),
+  getAllUser
+);
 userRouter.get("/:id", authenticate, getAUser);
 userRouter.post("/", UserCreationValidation, createUser);
 userRouter.post("/login", loginUser);
