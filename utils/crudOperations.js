@@ -173,6 +173,13 @@ exports.updateDocument = async (req, res, model, msg = "Successful") => {
 
 exports.deleteDocument = async (req, res, model) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "Id passed not a valid objectId" }],
+      });
+    }
     const resource = await model.findById(req.params.id);
     if (!resource) {
       return res.status(statusCodes[404]).json({
