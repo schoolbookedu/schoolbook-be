@@ -1,3 +1,4 @@
+const { isValidObjectId } = require("mongoose");
 const User = require("../models/user");
 const { excludedQueryFields } = require("./excludedFields");
 const { responseText, statusCodes } = require("./response");
@@ -87,6 +88,13 @@ exports.getOne = async (
   populate = { required: false }
 ) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "Id passed not a valid objectId" }],
+      });
+    }
     let resource = model
       .findById(req.params.id)
       .select(excludedFields.length ? `-${excludedFields.join(" -")}` : []);
@@ -123,6 +131,13 @@ exports.getOne = async (
 
 exports.updateDocument = async (req, res, model, msg = "Successful") => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "Id passed not a valid objectId" }],
+      });
+    }
     const resource = await model.findById(req.params.id);
     if (!resource) {
       res.status(statusCodes[404]).json({
@@ -140,10 +155,6 @@ exports.updateDocument = async (req, res, model, msg = "Successful") => {
         runValidators: true,
       }
     );
-
-    if (updatedResoure.password) {
-      updatedResoure.password = "*****";
-    }
 
     return res.status(statusCodes[200]).json({
       statusCode: statusCodes[200],
