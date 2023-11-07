@@ -46,12 +46,20 @@ exports.getStudentCourse = async (req, res, next) => {
     const userCourses = await User.findById(req.user.id)
       .populate("myCourses")
       .select("-password -passwordResetToken -passwordResetTokenExpires");
+
+    let myCourses = userCourses.myCourses;
+
+    const updatedCourses = myCourses.map((course) => {
+      const updatedCourse = { ...course._doc };
+      delete updatedCourse.enrollee;
+      return updatedCourse;
+    });
     res.status(statusCodes[200]).json({
       statusCode: statusCodes[200],
       responseText: responseText.SUCCESS,
       data: {
         msg: "My courses",
-        resource: userCourses,
+        resource: updatedCourses,
         extra: {},
       },
     });
