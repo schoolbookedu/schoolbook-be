@@ -1,4 +1,4 @@
-const { Schema } = require("mongoose");
+const { Types } = require("mongoose");
 const {
   getOne,
   getAll,
@@ -14,8 +14,8 @@ const Course = require("../models/course");
 const User = require("../models/user");
 const { uploadFile } = require("../utils/imageProcessing");
 
-const { Types } = Schema;
-const { ObjectId } = Types;
+// const { Types } = Schema;
+// const { ObjectId } = Types;
 
 const populate = {
   required: true,
@@ -110,12 +110,17 @@ exports.enrollToCourse = async (req, res, next) => {
         errors: [{ msg: "Invalid course Id" }],
       });
     }
-    user.myCourses = user.myCourses.unshift(courseId);
+
+    const courseIdConverted = Types.ObjectId(courseId);
+    const userIdConverted = Types.ObjectId(userId);
+
+    user.myCourses = [...user.myCourses, courseIdConverted];
     await user.save();
-    course.enrollee = course.enrollee.unshift(userId);
+
+    course.enrollee = [...course.enrollee, userIdConverted];
     course.enrollmentCount = course.enrollmentCount + 1;
     await course.save();
-    const enrolledCourse = { ...course };
+    const enrolledCourse = { ...course._doc };
     delete enrolledCourse.enrollee;
     delete enrolledCourse.enrollmentCount;
     res.status(statusCodes[201]).json({
