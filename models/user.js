@@ -36,7 +36,12 @@ const userSchema = new Schema({
     ref: "Department",
     required: true,
   },
-  myCourses: [String],
+  myCourses: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Course", // Reference to the course model
+    },
+  ],
   phoneNumber: {
     type: String,
     index: true,

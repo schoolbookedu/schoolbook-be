@@ -110,7 +110,6 @@ exports.enrollToCourse = async (req, res, next) => {
         errors: [{ msg: "Invalid course Id" }],
       });
     }
-    console.log("########### GOT here");
     user.myCourses = user.myCourses.unshift(courseId);
     await user.save();
     course.enrollee = course.enrollee.unshift(userId);
@@ -158,7 +157,7 @@ exports.createCourseMaterial = async (req, res, next) => {
 
     removeFields(CourseExcludedFields, req.body);
     req.body.userId = req.user.id;
-    const course = Course.findById(req.body.courseId);
+    const course = await Course.findById(req.body.courseId);
     if (!course) {
       return res.status(statusCodes[400]).json({
         statusCode: statusCodes[400],
