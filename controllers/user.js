@@ -71,7 +71,7 @@ exports.getAUser = async (req, res) => {
   }
 };
 
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   try {
     await validationCheck(req, res);
 
@@ -147,7 +147,7 @@ exports.createUser = async (req, res) => {
     next(error);
   }
 };
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
   try {
     await validationCheck(req, res);
     removeFields(UserUpdateExcludedFields, req.body);
