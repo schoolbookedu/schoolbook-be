@@ -85,7 +85,7 @@ exports.createCourse = async (req, res, next) => {
     removeFields(CourseExcludedFields, req.body);
     if (req.body.thumbnail) {
       const thumbnailURL = await uploadFile(
-        req.body.thumbnail,
+        req,
         "thumbnail",
         "course_thumbnail"
       );
