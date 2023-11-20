@@ -122,6 +122,19 @@ exports.enrollToCourse = async (req, res, next) => {
     const courseIdConverted = Types.ObjectId(courseId);
     const userIdConverted = Types.ObjectId(userId);
 
+    //check if user already enrolled in the course
+
+    let isEnrolled = user.myCourses.filter(
+      (id) => id.toString() === courseId.toString()
+    );
+    if (isEnrolled.length) {
+      return res.status(statusCodes[404]).json({
+        statusCode: statusCodes[404],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "You already enrolled for this course" }],
+      });
+    }
+
     user.myCourses = [...user.myCourses, courseIdConverted];
     await user.save();
 
