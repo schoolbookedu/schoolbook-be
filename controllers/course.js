@@ -44,7 +44,14 @@ exports.getTutorCourses = async (req, res, next) => {
 exports.getStudentCourse = async (req, res, next) => {
   try {
     const userCourses = await User.findById(req.user.id)
-      .populate("myCourses")
+      .populate({
+        path: "myCourses",
+        populate: {
+          path: "tutor",
+          model: "User",
+          select: "fullName phoneNumber gender email avatar",
+        },
+      })
       .select("-password -passwordResetToken -passwordResetTokenExpires");
 
     let myCourses = userCourses.myCourses;
