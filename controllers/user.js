@@ -93,13 +93,14 @@ exports.createUser = async (req, res, next) => {
 
     let hashedPassword = await hashUserPassword(req.body.password);
     req.body.password = hashedPassword;
+    req.body.verificationToken = userVerificationToken;
 
     const { msg, resource, extra } = await createDocument(req, res, User);
 
-    await User.findOneAndUpdate(
-      { email: req.body.email },
-      { verificationToken: userVerificationToken }
-    );
+    // await User.findOneAndUpdate(
+    //   { email: req.body.email },
+    //   { verificationToken: userVerificationToken }
+    // );
 
     const data = {
       fullName: req.body.fullName,
