@@ -96,12 +96,6 @@ exports.createUser = async (req, res, next) => {
     req.body.verificationToken = userVerificationToken;
 
     const { msg, resource, extra } = await createDocument(req, res, User);
-
-    // await User.findOneAndUpdate(
-    //   { email: req.body.email },
-    //   { verificationToken: userVerificationToken }
-    // );
-
     const data = {
       fullName: req.body.fullName,
       magicLink: `${process.env.BASE_URL}/api/v1/users/profile/verify?verificationToken=${userVerificationToken}`,
