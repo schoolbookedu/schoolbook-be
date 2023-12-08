@@ -50,8 +50,11 @@ exports.getStudentCourse = async (req, res, next) => {
           path: "tutor",
           model: "User",
           select: "fullName phoneNumber gender email avatar",
+        },
+        populate: {
+          path: "outlines",
           populate: {
-            path: "outlines",
+            path: "materialId",
             model: "Material",
           },
         },
