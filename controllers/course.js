@@ -50,6 +50,10 @@ exports.getStudentCourse = async (req, res, next) => {
           path: "tutor",
           model: "User",
           select: "fullName phoneNumber gender email avatar",
+          populate: {
+            path: "outlines",
+            model: "Material",
+          },
         },
       })
       .select("-password -passwordResetToken -passwordResetTokenExpires");
