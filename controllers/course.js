@@ -1,4 +1,4 @@
-const { Types } = require("mongoose");
+const { Types, isValidObjectId } = require("mongoose");
 const {
   getOne,
   getAll,
@@ -85,7 +85,35 @@ exports.getStudentCourse = async (req, res, next) => {
 
 exports.getACourse = async (req, res, next) => {
   try {
-    getOne(req, res, Course, CourseExcludedFields, populate);
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "Id passed not a valid objectId" }],
+      });
+    }
+    let resource = await Course.findById(req.params.id)
+      .populate({
+        path: "tutor",
+        model: "User",
+        select: "fullName phoneNumber gender email avatar",
+      })
+      .populate({
+        path: "outlines.materialId",
+        model: "Material",
+      });
+    if (!resource) {
+      return res.status(statusCodes[404]).json({
+        statusCode: statusCodes[404],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "Resource not found" }],
+      });
+    }
+    res.status(statusCodes[200]).json({
+      statusCode: statusCodes[200],
+      responseText: responseText.SUCCESS,
+      data: { resource },
+    });
   } catch (error) {
     console.log(error);
     next(error);
