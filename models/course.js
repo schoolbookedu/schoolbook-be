@@ -20,12 +20,20 @@ const courseSchema = new Schema({
     ref: "User",
     required: true,
   },
-  outlines: [
+  // outlines: [
+  //   {
+  //     materialId: {
+  //       type: Schema.Types.ObjectId,
+  //       ref: "Material",
+  //       required: true,
+  //     },
+  //   },
+  // ],
+  modules: [
     {
-      materialId: {
+      moduleId: {
         type: Schema.Types.ObjectId,
-        ref: "Material",
-        required: true,
+        ref: "Module",
       },
     },
   ],
