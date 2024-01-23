@@ -12,6 +12,7 @@ const { removeFields } = require("../utils/handleExcludedFields");
 const { validationCheck } = require("../utils/validationCheck");
 const Course = require("../models/course");
 const User = require("../models/user");
+const Module = require("../models/module");
 const { uploadFile } = require("../utils/imageProcessing");
 
 // const { Types } = Schema;
@@ -231,7 +232,7 @@ exports.createCourseModule = async (req, res, next) => {
         errors: [{ msg: "Course not found" }],
       });
     }
-    let createdModule = await createDocument(req, res, Course);
+    let createdModule = await createDocument(req, res, Module);
     course.modules.push(createdModule.resource._id);
 
     await course.save();
@@ -246,7 +247,7 @@ exports.createCourseModule = async (req, res, next) => {
   }
 };
 
-exports.createCourseMaterial = async (req, res, next) => {
+exports.createCourseModuleMaterial = async (req, res, next) => {
   try {
     await validationCheck(req, res);
 

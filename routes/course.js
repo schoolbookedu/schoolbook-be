@@ -5,7 +5,7 @@ const {
   createCourse,
   updateCourse,
   deleteCourse,
-  createCourseMaterial,
+  createCourseModuleMaterial,
   getTutorCourses,
   enrollToCourse,
   getStudentCourse,
@@ -15,7 +15,7 @@ const { authenticate, authorize } = require("../middlewares/auth");
 const {
   CourseCreationValidation,
   CourseUpdateValidation,
-  CourseMaterialValidation,
+  CourseModuleMaterialValidation,
   enrollmentValidation,
   CourseModuleValidation,
 } = require("../validations/course.validation");
@@ -50,15 +50,15 @@ courseRouter.post(
   "/course-module-materials",
   authenticate,
   authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]),
-  CourseModuleValidation,
-  createCourseModule
+  CourseModuleMaterialValidation,
+  createCourseModuleMaterial
 );
 courseRouter.post(
   "/course-modules",
   authenticate,
   authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]),
-  CourseMaterialValidation,
-  createCourseMaterial
+  CourseModuleValidation,
+  createCourseModule
 );
 courseRouter.patch("/:id", CourseUpdateValidation, updateCourse);
 courseRouter.delete("/:id", authenticate, deleteCourse);

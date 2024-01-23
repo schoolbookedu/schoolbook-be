@@ -9,7 +9,7 @@ exports.CourseCreationValidation = [
     .withMessage("objectives must be a string")
     .optional(),
 ];
-exports.CourseMaterialValidation = [
+exports.CourseModuleMaterialValidation = [
   body("title").trim().notEmpty().withMessage("title is required"),
   body("materialTitle")
     .trim()
@@ -20,7 +20,7 @@ exports.CourseMaterialValidation = [
     .notEmpty()
     .isIn(materialType)
     .withMessage("materialType is required"),
-  body("materialId").trim().notEmpty().withMessage("materialId is required"),
+  body("moduleId").trim().notEmpty().withMessage("moduleId is required"),
   body("courseId").trim().notEmpty().withMessage("courseId is required"),
 ];
 
