@@ -32,7 +32,7 @@ const courseSchema = new Schema({
   modules: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Module",
+      ref: "CourseModule",
     },
   ],
   enrollmentCount: {

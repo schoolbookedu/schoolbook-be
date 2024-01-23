@@ -12,7 +12,7 @@ const { removeFields } = require("../utils/handleExcludedFields");
 const { validationCheck } = require("../utils/validationCheck");
 const Material = require("../models/material");
 const Course = require("../models/course");
-const Module = require("../models/module");
+const CourseModule = require("../models/module");
 
 exports.createMaterial = async (req, res, next) => {
   try {
@@ -28,7 +28,7 @@ exports.createMaterial = async (req, res, next) => {
         errors: [{ msg: "Course not found" }],
       });
     }
-    const courseModule = await Module.findOne({
+    const courseModule = await CourseModule.findOne({
       _id: req.body.moduleId,
       courseId: req.body.courseId,
     });
