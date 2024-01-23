@@ -219,6 +219,33 @@ exports.deleteCourse = async (req, res, next) => {
   }
 };
 
+exports.createCourseModule = async (req, res, next) => {
+  try {
+    await validationCheck(req, res);
+    req.body.tutor = req.user.id;
+    const course = await Course.findById(req.body.courseId);
+    if (!course) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "Course not found" }],
+      });
+    }
+    let createdModule = await createDocument(req, res, Course);
+    course.modules.push(createdModule.resource._id);
+
+    await course.save();
+    res.status(statusCodes[201]).json({
+      statusCode: statusCodes[201],
+      responseText: responseText.SUCCESS,
+      data: createdModule,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 exports.createCourseMaterial = async (req, res, next) => {
   try {
     await validationCheck(req, res);

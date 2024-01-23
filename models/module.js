@@ -7,15 +7,18 @@ const moduleSchema = new Schema({
   },
   materials: [
     {
-      materialId: {
-        type: Schema.Types.ObjectId,
-        ref: "Material",
-      },
+      type: Schema.Types.ObjectId,
+      ref: "Material",
     },
   ],
   courseId: {
     type: Schema.Types.ObjectId,
     ref: "Course",
+    required: true,
+  },
+  tutor: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   createdAt: {

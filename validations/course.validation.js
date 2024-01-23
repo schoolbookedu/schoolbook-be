@@ -24,6 +24,11 @@ exports.CourseMaterialValidation = [
   body("courseId").trim().notEmpty().withMessage("courseId is required"),
 ];
 
+exports.CourseModuleValidation = [
+  body("title").trim().notEmpty().withMessage("Module title is required"),
+  body("courseId").trim().notEmpty().withMessage("CourseId is required"),
+];
+
 exports.enrollmentValidation = [
   body("courseId").trim().notEmpty().withMessage("courseId is required"),
 ];

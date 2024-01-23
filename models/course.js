@@ -31,10 +31,8 @@ const courseSchema = new Schema({
   // ],
   modules: [
     {
-      moduleId: {
-        type: Schema.Types.ObjectId,
-        ref: "Module",
-      },
+      type: Schema.Types.ObjectId,
+      ref: "Module",
     },
   ],
   enrollmentCount: {

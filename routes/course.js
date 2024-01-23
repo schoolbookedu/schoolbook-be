@@ -9,6 +9,7 @@ const {
   getTutorCourses,
   enrollToCourse,
   getStudentCourse,
+  createCourseModule,
 } = require("../controllers/course");
 const { authenticate, authorize } = require("../middlewares/auth");
 const {
@@ -16,6 +17,7 @@ const {
   CourseUpdateValidation,
   CourseMaterialValidation,
   enrollmentValidation,
+  CourseModuleValidation,
 } = require("../validations/course.validation");
 const { userTypes } = require("../utils/userTypes");
 
@@ -45,7 +47,14 @@ courseRouter.post(
   createCourse
 );
 courseRouter.post(
-  "/course-materials",
+  "/course-module-materials",
+  authenticate,
+  authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]),
+  CourseModuleValidation,
+  createCourseModule
+);
+courseRouter.post(
+  "/course-modules",
   authenticate,
   authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]),
   CourseMaterialValidation,
