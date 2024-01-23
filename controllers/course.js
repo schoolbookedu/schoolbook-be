@@ -261,6 +261,17 @@ exports.createCourseModuleMaterial = async (req, res, next) => {
         errors: [{ msg: "Course not found" }],
       });
     }
+    const courseModule = await Module.findOne({
+      _id: req.body.moduleId,
+      courseId: req.body.courseId,
+    });
+    if (!courseModule) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: `module not found for ${course.title} course` }],
+      });
+    }
 
     course.outlines.push(req.body);
     await course.save();

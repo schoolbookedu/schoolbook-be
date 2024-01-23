@@ -11,11 +11,34 @@ const { uploadFile } = require("../utils/imageProcessing");
 const { removeFields } = require("../utils/handleExcludedFields");
 const { validationCheck } = require("../utils/validationCheck");
 const Material = require("../models/material");
+const Course = require("../models/course");
+const Module = require("../models/module");
 
 exports.createMaterial = async (req, res, next) => {
   try {
     await validationCheck(req, res);
+
+    removeFields(CourseExcludedFields, req.body);
     req.body.userId = req.user.id;
+    const course = await Course.findById(req.body.courseId);
+    if (!course) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: "Course not found" }],
+      });
+    }
+    const courseModule = await Module.findOne({
+      _id: req.body.moduleId,
+      courseId: req.body.courseId,
+    });
+    if (!courseModule) {
+      return res.status(statusCodes[400]).json({
+        statusCode: statusCodes[400],
+        responseText: responseText.FAIL,
+        errors: [{ msg: `module not found for ${course.title} course` }],
+      });
+    }
 
     const mediaURLuploaded = await uploadFile(
       req,
@@ -24,7 +47,9 @@ exports.createMaterial = async (req, res, next) => {
     );
     req.body.mediaURL = mediaURLuploaded;
 
-    let created = await createDocument(req, res, Material);
+    let createdMaterial = await createDocument(req, res, Material);
+    courseModule.materials.push(createdMaterial.resource._id);
+    await courseModule.save();
     res.status(statusCodes[201]).json({
       statusCode: statusCodes[201],
       responseText: responseText.SUCCESS,
