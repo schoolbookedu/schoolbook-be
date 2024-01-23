@@ -47,13 +47,6 @@ courseRouter.post(
   createCourse
 );
 courseRouter.post(
-  "/course-module-materials",
-  authenticate,
-  authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]),
-  CourseModuleMaterialValidation,
-  createCourseModuleMaterial
-);
-courseRouter.post(
   "/course-modules",
   authenticate,
   authorize([userTypes.Instructor, userTypes.Developer, userTypes.Admin]),
