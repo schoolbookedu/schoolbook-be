@@ -18,6 +18,16 @@ const materialSchema = new Schema({
     ref: "User",
     required: true,
   },
+  moduleId: {
+    type: Schema.Types.ObjectId,
+    ref: "CourseModule",
+    required: true,
+  },
+  courseId: {
+    type: Schema.Types.ObjectId,
+    ref: "Course",
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

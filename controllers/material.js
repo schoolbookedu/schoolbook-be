@@ -18,7 +18,7 @@ exports.createMaterial = async (req, res, next) => {
   try {
     await validationCheck(req, res);
 
-    removeFields(CourseExcludedFields, req.body);
+    //removeFields(CourseExcludedFields, req.body);
     req.body.userId = req.user.id;
     const course = await Course.findById(req.body.courseId);
     if (!course) {
@@ -53,7 +53,7 @@ exports.createMaterial = async (req, res, next) => {
     res.status(statusCodes[201]).json({
       statusCode: statusCodes[201],
       responseText: responseText.SUCCESS,
-      data: created,
+      data: createdMaterial,
     });
   } catch (error) {
     console.log(JSON.stringify(error));
