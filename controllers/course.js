@@ -31,6 +31,24 @@ exports.getAllCourse = async (req, res, next) => {
     next(error);
   }
 };
+exports.getModuleMaterials = async (req, res) => {};
+exports.getCourseModules = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const courseModules = await Course.findById(courseId).populate("modules");
+    res.status(statusCodes[200]).json({
+      statusCode: statusCodes[200],
+      responseText: responseText.SUCCESS,
+      data: {
+        msg: "Course modules successfully fetched",
+        resource: courseModules,
+        extra: {},
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 exports.getTutorCourses = async (req, res, next) => {
   try {

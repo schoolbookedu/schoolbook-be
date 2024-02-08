@@ -10,6 +10,8 @@ const {
   enrollToCourse,
   getStudentCourse,
   createCourseModule,
+  getCourseModules,
+  getModuleMaterials,
 } = require("../controllers/course");
 const { authenticate, authorize } = require("../middlewares/auth");
 const {
@@ -25,6 +27,12 @@ const courseRouter = express.Router();
 
 courseRouter.get("/", authenticate, getAllCourse);
 courseRouter.get("/:id", authenticate, getACourse);
+courseRouter.get("/:courseId/course-modules", authenticate, getCourseModules);
+courseRouter.get(
+  "/course-modules/:moduleId/materials",
+  authenticate,
+  getModuleMaterials
+);
 courseRouter.get("/tutor/my-courses", authenticate, getTutorCourses);
 courseRouter.get(
   "/student/my-courses",
