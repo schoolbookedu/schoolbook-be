@@ -25,14 +25,23 @@ const populate = {
 };
 exports.getAllCourse = async (req, res, next) => {
   try {
-    getAll(req, res, Course, CourseExcludedFields, populate);
+    const courses = await Course.find({}).populate("modules");
+    res.status(statusCodes[200]).json({
+      statusCode: statusCodes[200],
+      responseText: responseText.SUCCESS,
+      data: {
+        msg: "Courses fetched successfully",
+        resource: courses,
+        extra: {},
+      },
+    });
   } catch (error) {
     console.log(error);
     next(error);
   }
 };
 exports.getModuleMaterials = async (req, res) => {};
-exports.getCourseModules = async (req, res) => {
+exports.getCourseModules = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const courseModules = await Course.findById(courseId).populate("modules");
@@ -47,6 +56,7 @@ exports.getCourseModules = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    next(error);
   }
 };
 
