@@ -121,16 +121,9 @@ exports.getACourse = async (req, res, next) => {
         errors: [{ msg: "Id passed not a valid objectId" }],
       });
     }
-    let resource = await Course.findById(req.params.id)
-      .populate({
-        path: "tutor",
-        model: "User",
-        select: "fullName phoneNumber gender email avatar",
-      })
-      .populate({
-        path: "outlines.materialId",
-        model: "Material",
-      });
+
+    const resource = await Course.findById(req.params.id).populate("modules");
+
     if (!resource) {
       return res.status(statusCodes[404]).json({
         statusCode: statusCodes[404],
