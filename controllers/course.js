@@ -25,7 +25,9 @@ const populate = {
 };
 exports.getAllCourse = async (req, res, next) => {
   try {
-    const courses = await Course.find({}).populate("modules");
+    const courses = await Course.find({})
+      .populate("modules")
+      .populate("tutor", "fullName email avatar country phoneNumber gender");
     res.status(statusCodes[200]).json({
       statusCode: statusCodes[200],
       responseText: responseText.SUCCESS,
