@@ -12,6 +12,7 @@ const {
   createCourseModule,
   getCourseModules,
   getModuleMaterials,
+  deleteCourseModule,
 } = require("../controllers/course");
 const { authenticate, authorize } = require("../middlewares/auth");
 const {
@@ -63,5 +64,6 @@ courseRouter.post(
 );
 courseRouter.patch("/:id", CourseUpdateValidation, updateCourse);
 courseRouter.delete("/:id", authenticate, deleteCourse);
+courseRouter.delete("/course-modules/:id", authenticate, deleteCourseModule);
 
 module.exports = { courseRouter };

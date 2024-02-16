@@ -263,6 +263,14 @@ exports.deleteCourse = async (req, res, next) => {
     next(error);
   }
 };
+exports.deleteCourseModule = async (req, res, next) => {
+  try {
+    deleteDocument(req, res, CourseModule);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 
 exports.createCourseModule = async (req, res, next) => {
   try {
