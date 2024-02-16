@@ -254,6 +254,20 @@ exports.updateCourse = async (req, res, next) => {
     next(error);
   }
 };
+exports.updateCourseModule = async (req, res, next) => {
+  try {
+    await validationCheck(req, res);
+    updateDocument(
+      req,
+      res,
+      CourseModule,
+      "Course module updated successfully"
+    );
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 
 exports.deleteCourse = async (req, res, next) => {
   try {
