@@ -143,7 +143,9 @@ exports.getACourse = async (req, res, next) => {
       });
     }
 
-    const resource = await Course.findById(req.params.id).populate("modules");
+    const resource = await Course.findById(req.params.id)
+      .populate("modules")
+      .populate("tutor", "fullName email avatar country phoneNumber gender");
 
     if (!resource) {
       return res.status(statusCodes[404]).json({
