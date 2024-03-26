@@ -20,11 +20,11 @@ exports.authenticate = async (req, res, next) => {
     if (!accessToken) {
       return res.status(401).json({
         statusCode: statusCodes[401],
-        errors: [{ message: "Acesss denied, no authorization token" }],
+        errors: [{ message: "Access denied, no authorization token" }],
         responseText: responseText.FAIL,
       });
     }
-    //decode the acesss token
+    //decode the access token
     const decodedToken = await jwt.verify(accessToken, JWT_SECRET);
 
     //check if user exist   just to be sure the user had not bern deleted
@@ -35,7 +35,7 @@ exports.authenticate = async (req, res, next) => {
         errors: [
           {
             message:
-              "Acesss denied, user with the token might have been deleted or deactivated",
+              "Access denied, user with the token might have been deleted or deactivated",
           },
         ],
         responseText: responseText.FAIL,
