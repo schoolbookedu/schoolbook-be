@@ -120,13 +120,6 @@ exports.createUser = async (req, res, next) => {
 
         // Send the email
         await sendMailWithSendgrid(mailOptions);
-        // await publishToRabbitMQ(mailOptions)
-        //   .then(() => {
-        //     consumeFromRabbitMQ();
-        //   })
-        //   .catch((error) => {
-        //     console.error("Error:", error);
-        //   });
       }
     );
 
@@ -362,9 +355,9 @@ exports.verifyUser = async (req, res, next) => {
     user.verificationToken = undefined;
     await user.save();
 
-    //  const redirectUrl = ""; frontend login page url goes here
-    //  res.redirect(redirectUrl);
-    res.send("verification sucessful");
+     const redirectUrl = "https://schoolbook-fe-lovat.vercel.app/"; //frontend login page url goes here
+     res.redirect(redirectUrl);
+    // res.send("verification sucessful");
   } catch (error) {
     next(error);
   }
